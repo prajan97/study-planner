@@ -618,7 +618,13 @@
         
         form.addEventListener('submit', function(e) {
             e.preventDefault();
-            calculateAndDisplay();
+            console.log('Form submitted'); // Debug log
+            try {
+                calculateAndDisplay();
+            } catch (error) {
+                console.error('Error:', error);
+                alert('There was an error calculating your study plan. Please check all fields are filled in.');
+            }
         });
         
         function calculateAndDisplay() {
@@ -658,8 +664,12 @@
             createCalendar(perDay);
             generateRecommendation(available, perYear);
             
+            console.log('Showing results, available hours:', available); // Debug log
             resultsDiv.classList.add('show');
-            resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            
+            setTimeout(() => {
+                resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 100);
         }
         
         function createCharts(work, sleep, meals, hygiene, family, exercise, social, scrolling, other, available) {
