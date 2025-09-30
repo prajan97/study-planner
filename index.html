@@ -485,7 +485,7 @@
     <div class="container">
         <div class="header">
             <h1>Professional Study Planner</h1>
-            <div class="subtitle">Discover your personalised learning pathway</div>
+            <div class="subtitle">Discover your personalized learning pathway</div>
             <div class="uni-name">KING'S COLLEGE LONDON</div>
         </div>
         
@@ -510,13 +510,13 @@
                     
                     <div class="input-group">
                         <label>Personal Time (hours/week)</label>
-                        <input type="number" id="social" min="0" max="168" value="15" required>
+                        <input type="number" id="social" min="0" max="168" value="35" required>
                         <div class="helper-text">Exercise, hobbies, social activities</div>
                     </div>
                     
                     <div class="input-group">
                         <label>Other Commitments (hours/week)</label>
-                        <input type="number" id="other" min="0" max="168" value="5" required>
+                        <input type="number" id="other" min="0" max="168" value="10" required>
                         <div class="helper-text">Appointments, volunteering, etc.</div>
                     </div>
                 </div>
@@ -589,7 +589,7 @@
             <div class="modal-body">
                 <input type="text" id="userName" placeholder="Your Name" required>
                 <input type="email" id="userEmail" placeholder="Your Email Address" required>
-                <p style="font-size: 13px; color: #6c757d; margin-top: 12px;">We'll send you a detailed PDF of your personalized study plan and information about relevant programmes at King's College London.</p>
+                <p style="font-size: 13px; color: #6c757d; margin-top: 12px;">We'll send you a detailed PDF of your personalised study plan and information about relevant programmes at King's College London.</p>
             </div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" id="closeModal">Cancel</button>
@@ -625,10 +625,9 @@
             const work = parseFloat(document.getElementById('work').value) || 0;
             const family = parseFloat(document.getElementById('family').value) || 0;
             const social = parseFloat(document.getElementById('social').value) || 0;
-            const sleep = parseFloat(document.getElementById('sleep').value) || 0;
             const other = parseFloat(document.getElementById('other').value) || 0;
             
-            const totalCommitted = work + family + social + sleep + other;
+            const totalCommitted = work + family + social + other;
             const totalHours = 168;
             let available = totalHours - totalCommitted;
             
@@ -641,7 +640,7 @@
             const perYear = (available * 52).toFixed(0);
             
             currentData = {
-                work, family, social, sleep, other, available,
+                work, family, social, other, available,
                 perDay, perMonth, perYear
             };
             
@@ -650,7 +649,7 @@
             document.getElementById('monthlyHours').textContent = perMonth + 'h';
             document.getElementById('yearlyHours').textContent = perYear + 'h';
             
-            createCharts(work, family, social, sleep, other, available);
+            createCharts(work, family, social, other, available);
             createCalendar(perDay);
             generateRecommendation(available, perYear);
             
@@ -789,7 +788,7 @@
                 return;
             }
             
-            alert('Thank you, ' + name + '! Your personalized study plan will be sent to ' + email + ' shortly. We\'ll also include information about relevant programmes at King\'s College London.');
+            alert('Thank you, ' + name + '! Your personalised study plan will be sent to ' + email + ' shortly. We\'ll also include information about relevant programmes at King\'s College London.');
             
             emailModal.classList.remove('show');
             document.getElementById('userName').value = '';
