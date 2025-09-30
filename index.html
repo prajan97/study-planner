@@ -65,7 +65,7 @@
             background: #f8f9fa;
             padding: 24px;
             border-radius: 12px;
-            margin-bottom: 40px;
+            margin-bottom: 30px;
             border-left: 4px solid #e52d27;
         }
         
@@ -73,6 +73,50 @@
             color: #495057;
             line-height: 1.7;
             font-size: 15px;
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #dee2e6;
+        }
+        
+        .tab {
+            padding: 16px 32px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            color: #6c757d;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+            position: relative;
+            top: 2px;
+        }
+        
+        .tab:hover {
+            color: #e52d27;
+        }
+        
+        .tab.active {
+            color: #e52d27;
+            border-bottom-color: #e52d27;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         
         .form-grid {
@@ -92,10 +136,6 @@
             font-weight: 600;
             color: #212529;
             font-size: 15px;
-        }
-        
-        .input-wrapper {
-            position: relative;
         }
         
         input[type="number"] {
@@ -185,33 +225,6 @@
             font-size: 16px;
         }
         
-        .visualization-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            margin-bottom: 40px;
-        }
-        
-        .chart-container {
-            background: #f8f9fa;
-            padding: 30px;
-            border-radius: 16px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-        }
-        
-        .chart-title {
-            font-size: 16px;
-            font-weight: 700;
-            color: #212529;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-        
-        .chart-wrapper {
-            position: relative;
-            height: 280px;
-        }
-        
         .stats-showcase {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -248,6 +261,33 @@
             font-weight: 800;
             color: #e52d27;
             line-height: 1;
+        }
+        
+        .visualization-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .chart-container {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+        
+        .chart-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #212529;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .chart-wrapper {
+            position: relative;
+            height: 280px;
         }
         
         .calendar-section {
@@ -451,6 +491,15 @@
                 padding: 30px 20px;
             }
             
+            .tabs {
+                overflow-x: auto;
+            }
+            
+            .tab {
+                padding: 12px 20px;
+                white-space: nowrap;
+            }
+            
             .form-grid {
                 grid-template-columns: 1fr;
             }
@@ -485,39 +534,80 @@
     <div class="container">
         <div class="header">
             <h1>Professional Study Planner</h1>
-            <div class="subtitle">Discover your personalized learning pathway</div>
+            <div class="subtitle">Discover your personalised learning pathway</div>
             <div class="uni-name">KING'S COLLEGE LONDON</div>
         </div>
         
         <div class="content">
             <div class="intro-text">
-                <p><strong>Welcome to your personalised study planning tool.</strong> Our flexible programmes are designed for working professionals. Let's analyse your schedule and create a tailored study plan that fits seamlessly into your life.</p>
+                <p><strong>Welcome to your personalised study planning tool.</strong> Complete both sections to get an accurate picture of your available study time. Our flexible programmes are designed to fit around your life.</p>
+            </div>
+            
+            <div class="tabs">
+                <button class="tab active" data-tab="essential">Essential Commitments</button>
+                <button class="tab" data-tab="lifestyle">Lifestyle & Wellbeing</button>
             </div>
             
             <form id="calculatorForm">
-                <div class="form-grid">
-                    <div class="input-group">
-                        <label>Work & Commute (hours/week)</label>
-                        <input type="number" id="work" min="0" max="168" value="40" required>
-                        <div class="helper-text">Include travel time to and from work</div>
+                <div id="essential" class="tab-content active">
+                    <div class="form-grid">
+                        <div class="input-group">
+                            <label>Work & Commute (hours/week)</label>
+                            <input type="number" id="work" min="0" max="168" value="40" required>
+                            <div class="helper-text">Include travel time to and from work</div>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label>Sleep (hours/week)</label>
+                            <input type="number" id="sleep" min="0" max="168" value="49" required>
+                            <div class="helper-text">Average: 7 hours per night</div>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label>Meals & Food Preparation (hours/week)</label>
+                            <input type="number" id="meals" min="0" max="168" value="14" required>
+                            <div class="helper-text">Cooking, eating, shopping</div>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label>Family Commitments (hours/week)</label>
+                            <input type="number" id="family" min="0" max="168" value="20" required>
+                            <div class="helper-text">Childcare, household duties</div>
+                        </div>
                     </div>
-                    
-                    <div class="input-group">
-                        <label>Family Commitments (hours/week)</label>
-                        <input type="number" id="family" min="0" max="168" value="20" required>
-                        <div class="helper-text">Childcare, household duties, family time</div>
-                    </div>
-                    
-                    <div class="input-group">
-                        <label>Personal Time (hours/week)</label>
-                        <input type="number" id="social" min="0" max="168" value="35" required>
-                        <div class="helper-text">Exercise, hobbies, social activities</div>
-                    </div>
-                    
-                    <div class="input-group">
-                        <label>Other Commitments (hours/week)</label>
-                        <input type="number" id="other" min="0" max="168" value="10" required>
-                        <div class="helper-text">Appointments, volunteering, etc.</div>
+                </div>
+                
+                <div id="lifestyle" class="tab-content">
+                    <div class="form-grid">
+                        <div class="input-group">
+                            <label>Personal Care & Hygiene (hours/week)</label>
+                            <input type="number" id="hygiene" min="0" max="168" value="7" required>
+                            <div class="helper-text">Showering, grooming, getting ready</div>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label>Exercise & Fitness (hours/week)</label>
+                            <input type="number" id="exercise" min="0" max="168" value="5" required>
+                            <div class="helper-text">Physical activity and wellness</div>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label>Social & Leisure Time (hours/week)</label>
+                            <input type="number" id="social" min="0" max="168" value="10" required>
+                            <div class="helper-text">Friends, hobbies, entertainment</div>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label>Screen Time & Social Media (hours/week)</label>
+                            <input type="number" id="scrolling" min="0" max="168" value="14" required>
+                            <div class="helper-text">Browsing, scrolling, casual internet</div>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label>Other Commitments (hours/week)</label>
+                            <input type="number" id="other" min="0" max="168" value="5" required>
+                            <div class="helper-text">Appointments, volunteering, errands</div>
+                        </div>
                     </div>
                 </div>
                 
@@ -599,6 +689,22 @@
     </div>
     
     <script>
+        // Tab switching
+        const tabs = document.querySelectorAll('.tab');
+        const tabContents = document.querySelectorAll('.tab-content');
+        
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const targetTab = tab.getAttribute('data-tab');
+                
+                tabs.forEach(t => t.classList.remove('active'));
+                tabContents.forEach(tc => tc.classList.remove('active'));
+                
+                tab.classList.add('active');
+                document.getElementById(targetTab).classList.add('active');
+            });
+        });
+        
         const days = [
             { name: 'Mon', full: 'Monday' },
             { name: 'Tue', full: 'Tuesday' },
@@ -618,13 +724,7 @@
         
         form.addEventListener('submit', function(e) {
             e.preventDefault();
-            console.log('Form submitted'); // Debug log
-            try {
-                calculateAndDisplay();
-            } catch (error) {
-                console.error('Error:', error);
-                alert('There was an error calculating your study plan. Please check all fields are filled in.');
-            }
+            calculateAndDisplay();
         });
         
         function calculateAndDisplay() {
@@ -642,7 +742,6 @@
             const totalHours = 168;
             let available = totalHours - totalCommitted;
             
-            // Ensure we don't show negative or unrealistic numbers
             if (available < 0) available = 0;
             if (available > 168) available = 168;
             
@@ -664,9 +763,7 @@
             createCalendar(perDay);
             generateRecommendation(available, perYear);
             
-            console.log('Showing results, available hours:', available); // Debug log
             resultsDiv.classList.add('show');
-            
             setTimeout(() => {
                 resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }, 100);
@@ -707,8 +804,9 @@
                         legend: {
                             position: 'bottom',
                             labels: {
-                                padding: 12,
-                                font: { size: 11, weight: '600' }
+                                padding: 10,
+                                font: { size: 10, weight: '600' },
+                                boxWidth: 12
                             }
                         }
                     }
@@ -774,16 +872,19 @@
             
             if (available >= 20) {
                 title = 'Excellent Capacity: Multiple Programme Options';
-                text = '<strong>You have exceptional study capacity.</strong> With ' + available.toFixed(0) + ' hours weekly (' + perYear + ' hours annually), you could pursue full-time programmes, intensive part-time Master\'s degrees, or multiple professional certificates simultaneously. Our flexible scheduling accommodates your preferred study times, whether early morning, lunch breaks, or evenings.';
+                text = '<strong>You have exceptional study capacity.</strong> With ' + available.toFixed(0) + ' hours weekly (' + perYear + ' hours annually), you could pursue full-time programmes, intensive part-time Master\'s degrees, or multiple professional certificates simultaneously.';
             } else if (available >= 12) {
                 title = 'Strong Capacity: Ideal for Part-Time Study';
-                text = '<strong>Your schedule is well-suited for part-time learning.</strong> ' + available.toFixed(0) + ' hours per week (' + perYear + ' hours annually) aligns perfectly with our part-time Master\'s programmes (2-3 year completion) and professional certificates (8-12 week duration). Most successful part-time students have similar commitments. Our asynchronous content enables study during commutes, lunch breaks, or evenings.';
+                text = '<strong>Your schedule is well-suited for part-time learning.</strong> ' + available.toFixed(0) + ' hours per week (' + perYear + ' hours annually) aligns perfectly with our part-time Master\'s programmes (2-3 year completion) and professional certificates.';
             } else if (available >= 7) {
                 title = 'Good Capacity: Flexible Learning Recommended';
-                text = '<strong>Your schedule supports flexible learning programmes.</strong> ' + available.toFixed(0) + ' hours weekly equals ' + perYear + ' hours annually. Consider self-paced online programmes, micro-credentials (completion in weeks), or modular formats (one module at a time). Our mobile-optimized platform enables learning during commutes, breaks, and other transitional moments throughout your day.';
-            } else {
+                text = '<strong>Your schedule supports flexible learning programmes.</strong> ' + available.toFixed(0) + ' hours weekly equals ' + perYear + ' hours annually. Consider self-paced online programmes, micro-credentials, or modular formats.';
+            } else if (available >= 3) {
                 title = 'Moderate Capacity: Micro-Learning Approach';
-                text = '<strong>Your schedule is ideal for micro-learning.</strong> With ' + available.toFixed(0) + ' hours weekly (' + perYear + ' hours annually), short professional certificates (4-8 weeks), micro-credentials, and executive education formats work exceptionally well. Our bite-sized content is designed for busy professionals, with 10-15 minute learning modules that fit seamlessly into your routine.';
+                text = '<strong>Your schedule is ideal for micro-learning.</strong> With ' + available.toFixed(0) + ' hours weekly (' + perYear + ' hours annually), short professional certificates (4-8 weeks) and micro-credentials work exceptionally well.';
+            } else {
+                title = 'Limited Capacity: Consider Adjusting Your Schedule';
+                text = '<strong>You currently have limited study time available.</strong> With ' + available.toFixed(0) + ' hours per week, you might want to review your commitments. Consider reducing screen time or adjusting other activities to create more study opportunities.';
             }
             
             document.getElementById('recommendationTitle').textContent = title;
@@ -815,7 +916,7 @@
         });
         
         document.getElementById('downloadBtn').addEventListener('click', function() {
-            alert('PDF download functionality would integrate with a backend service. For now, you can use your browser\'s Print function (Ctrl/Cmd + P) and save as PDF.');
+            window.print();
         });
         
         emailModal.addEventListener('click', function(e) {
