@@ -623,11 +623,16 @@
         
         function calculateAndDisplay() {
             const work = parseFloat(document.getElementById('work').value) || 0;
+            const sleep = parseFloat(document.getElementById('sleep').value) || 0;
+            const meals = parseFloat(document.getElementById('meals').value) || 0;
+            const hygiene = parseFloat(document.getElementById('hygiene').value) || 0;
             const family = parseFloat(document.getElementById('family').value) || 0;
+            const exercise = parseFloat(document.getElementById('exercise').value) || 0;
             const social = parseFloat(document.getElementById('social').value) || 0;
+            const scrolling = parseFloat(document.getElementById('scrolling').value) || 0;
             const other = parseFloat(document.getElementById('other').value) || 0;
             
-            const totalCommitted = work + family + social + other;
+            const totalCommitted = work + sleep + meals + hygiene + family + exercise + social + scrolling + other;
             const totalHours = 168;
             let available = totalHours - totalCommitted;
             
@@ -640,7 +645,7 @@
             const perYear = (available * 52).toFixed(0);
             
             currentData = {
-                work, family, social, other, available,
+                work, sleep, meals, hygiene, family, exercise, social, scrolling, other, available,
                 perDay, perMonth, perYear
             };
             
@@ -649,7 +654,7 @@
             document.getElementById('monthlyHours').textContent = perMonth + 'h';
             document.getElementById('yearlyHours').textContent = perYear + 'h';
             
-            createCharts(work, family, social, other, available);
+            createCharts(work, sleep, meals, hygiene, family, exercise, social, scrolling, other, available);
             createCalendar(perDay);
             generateRecommendation(available, perYear);
             
@@ -657,7 +662,7 @@
             resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
         
-        function createCharts(work, family, social, other, available) {
+        function createCharts(work, sleep, meals, hygiene, family, exercise, social, scrolling, other, available) {
             const pieCtx = document.getElementById('pieChart').getContext('2d');
             const barCtx = document.getElementById('barChart').getContext('2d');
             
@@ -667,13 +672,18 @@
             pieChart = new Chart(pieCtx, {
                 type: 'doughnut',
                 data: {
-                    labels: ['Work', 'Family', 'Personal', 'Other', 'Study Time'],
+                    labels: ['Work', 'Sleep', 'Meals', 'Hygiene', 'Family', 'Exercise', 'Social', 'Screen Time', 'Other', 'Study Time'],
                     datasets: [{
-                        data: [work, family, social, other, available],
+                        data: [work, sleep, meals, hygiene, family, exercise, social, scrolling, other, available],
                         backgroundColor: [
                             '#e52d27',
+                            '#6c757d',
+                            '#fd7e14',
+                            '#20c997',
                             '#ff6b6b',
                             '#4ecdc4',
+                            '#ffc107',
+                            '#dc3545',
                             '#96ceb4',
                             '#28a745'
                         ],
