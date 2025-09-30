@@ -485,7 +485,7 @@
     <div class="container">
         <div class="header">
             <h1>Professional Study Planner</h1>
-            <div class="subtitle">Discover your personalised learning pathway</div>
+            <div class="subtitle">Discover your personalized learning pathway</div>
             <div class="uni-name">KING'S COLLEGE LONDON</div>
         </div>
         
@@ -631,8 +631,8 @@
             const totalHours = 168;
             let available = totalHours - totalCommitted;
             
-            const microMoments = 7;
-            available = Math.max(available + microMoments, 5);
+            // Ensure we don't show negative or unrealistic numbers
+            if (available < 0) available = 0;
             if (available > 168) available = 168;
             
             const perDay = (available / 7).toFixed(1);
@@ -657,7 +657,7 @@
             resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
         
-        function createCharts(work, family, social, sleep, other, available) {
+        function createCharts(work, family, social, other, available) {
             const pieCtx = document.getElementById('pieChart').getContext('2d');
             const barCtx = document.getElementById('barChart').getContext('2d');
             
@@ -667,14 +667,13 @@
             pieChart = new Chart(pieCtx, {
                 type: 'doughnut',
                 data: {
-                    labels: ['Work', 'Family', 'Personal', 'Sleep', 'Other', 'Study Time'],
+                    labels: ['Work', 'Family', 'Personal', 'Other', 'Study Time'],
                     datasets: [{
-                        data: [work, family, social, sleep, other, available],
+                        data: [work, family, social, other, available],
                         backgroundColor: [
                             '#e52d27',
                             '#ff6b6b',
                             '#4ecdc4',
-                            '#45b7d1',
                             '#96ceb4',
                             '#28a745'
                         ],
