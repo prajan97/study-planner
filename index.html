@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Study Time Planner - King's College London</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #e52d27 0%, #b31217 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 25px 70px rgba(0,0,0,0.4);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #e52d27 0%, #b31217 100%);
+            color: white;
+            padding: 50px 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            font-size: 200px;
+            opacity: 0.1;
+            top: -50px;
+            right: -30px;
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+        }
+        
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 15px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .header .subtitle {
+            font-size: 18px;
+            opacity: 0.95;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .header .uni-name {
+            margin-top: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 40px 30px;
+        }
+        
+        .intro-text {
+            background: linear-gradient(135deg, #fff5f5 0%, #ffe0e0 100%);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            border-left: 4px solid #e52d27;
+        }
+        
+        .intro-text p {
+            color: #666;
+            line-height: 1.6;
+        }
+        
+        .input-group {
+            margin-bottom: 25px;
+            animation: slideIn 0.5s ease-out backwards;
+        }
+        
+        .input-group:nth-child(1) { animation-delay: 0.1s; }
+        .input-group:nth-child(2) { animation-delay: 0.2s; }
+        .input-group:nth-child(3) { animation-delay: 0.3s; }
+        .input-group:nth-child(4) { animation-delay: 0.4s; }
+        .input-group:nth-child(5) { animation-delay: 0.5s; }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        label {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+            font-size: 16px;
+        }
+        
+        .input-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        input[type="number"] {
+            flex: 1;
+            padding: 14px 18px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s;
+            background: white;
+        }
+        
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #e52d27;
+            box-shadow: 0 0 0 3px rgba(229, 45, 39, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .helper-text {
+            font-size: 13px;
+            color: #666;
+            margin-top: 5px;
+            font-style: italic;
+        }
+        
+        .positive-spin {
+            display: inline-block;
+            margin-left: 10px;
+            padding: 4px 12px;
+            background: #d4edda;
+            color: #155724;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .calculate-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #e52d27 0%, #b31217 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 20px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 15px;
+            box-shadow: 0 8px 20px rgba(229, 45, 39, 0.3);
+        }
+        
+        .calculate-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(229, 45, 39, 0.4);
+        }
+        
+        .calculate-btn:active {
+            transform: translateY(0);
+        }
+        
+        .results {
+            margin-top: 30px;
+            display: none;
+        }
+        
+        .results.show {
+            display: block;
+            animation: popIn 0.5s ease-out;
+        }
+        
+        @keyframes popIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        .opportunity-banner {
+            background: linear-gradient(135deg, #28a745 0%, #218838 100%);
+            padding: 30px;
+            border-radius: 16px;
+            text-align: center;
+            color: white;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 25px rgba(40, 167, 69, 0.3);
+        }
+        
+        .opportunity-label {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        .opportunity-value {
+            font-size: 56px;
+            font-weight: 900;
+            text-shadow: 2px 2px 10px rgba(0,0,0,0.2);
+            margin: 10px 0;
+        }
+        
+        .opportunity-tagline {
+            font-size: 18px;
+            opacity: 0.95;
+            margin-top: 10px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #fff5f5 0%, #ffe0e0 100%);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            border: 2px solid #e52d27;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .stat-value {
+            font-size: 32px;
+            font-weight: 900;
+            color: #e52d27;
+        }
+        
+        .calendar-section {
+            background: white;
+            padding: 25px;
+            border-radius: 16px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+        
+        .calendar-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #e52d27;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .calendar-day {
+            aspect-ratio: 1;
+            background: #f8f9fa;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+            transition: all 0.3s;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+        
+        .calendar-day:hover {
+            transform: scale(1.05);
+            border-color: #e52d27;
+            box-shadow: 0 4px 12px rgba(229, 45, 39, 0.2);
+        }
+        
+        .calendar-day.study-time {
+            background: linear-gradient(135deg, #28a745 0%, #218838 100%);
+            color: white;
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+        }
+        
+        .day-name-cal {
+            font-size: 11px;
+            font-weight: 700;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+        
+        .day-emoji-cal {
+            font-size: 20px;
+            margin-bottom: 5px;
+            display: none;
+        }
+        
+        .day-hours-cal {
+            font-size: 18px;
+            font-weight: 900;
+        }
+        
+        .calendar-legend {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+        }
+        
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 5px;
+        }
+        
+        .recommendation {
+            background: linear-gradient(135deg, #fff5f5 0%, #ffe0e0 100%);
+            padding: 25px;
+            border-radius: 12px;
+            border-left: 5px solid #e52d27;
+        }
+        
+        .recommendation-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #e52d27;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .recommendation-text {
+            color: #333;
+            line-height: 1.8;
+            font-size: 15px;
+        }
+        
+        .recommendation-text strong {
+            color: #e52d27;
+        }
+        
+        .cta-box {
+            margin-top: 20px;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #e52d27 0%, #b31217 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 700;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(229, 45, 39, 0.3);
+        }
+        
+        @media (max-width: 600px) {
+            .header {
+                padding: 40px 20px;
+            }
+            
+            .header h1 {
+                font-size: 26px;
+            }
+            
+            .content {
+                padding: 30px 20px;
+            }
+            
+            .opportunity-value {
+                font-size: 42px;
+            }
+            
+            .calendar {
+                gap: 5px;
+            }
+            
+            .day-emoji-cal {
+                font-size: 16px;
+            }
+            
+            .day-hours-cal {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Discover Your Study Opportunities</h1>
+            <div class="subtitle">See how King's fits perfectly into your life!</div>
+            <div class="uni-name">KING'S COLLEGE LONDON</div>
+        </div>
+        
+        <div class="content">
+            <div class="intro-text">
+                <p><strong>Welcome!</strong> You probably have MORE time for study than you think! Our flexible programmes are designed to fit around YOUR life. Let's discover the study opportunities hidden in your week!</p>
+            </div>
+            
+            <form id="calculatorForm">
+                <div class="input-group">
+                    <label>
+                        <span>Work & commute (hours per week)</span>
+                    </label>
+                    <input type="number" id="work" min="0" max="168" value="40" required>
+                    <div class="helper-text">Many of our students work full-time and still thrive!</div>
+                </div>
+                
+                <div class="input-group">
+                    <label>
+                        <span>Family commitments (hours per week)</span>
+                    </label>
+                    <input type="number" id="family" min="0" max="168" value="20" required>
+                    <div class="helper-text">Study in moments between life - waiting, commuting, lunch breaks!</div>
+                </div>
+                
+                <div class="input-group">
+                    <label>
+                        <span>Sleep (hours per week)</span>
+                    </label>
+                    <input type="number" id="sleep" min="0" max="168" value="49" required>
+                    <div class="helper-text">7 hours/night = 49hrs/week (you can study while energized!)</div>
+                </div>
+                
+                <div class="input-group">
+                    <label>
+                        <span>Personal time you want to KEEP (hours per week)</span>
+                    </label>
+                    <input type="number" id="social" min="0" max="168" value="15" required>
+                    <div class="helper-text">Exercise, hobbies, friends - balance is key to success!</div>
+                </div>
+                
+                <div class="input-group">
+                    <label>
+                        <span>Other commitments (hours per week)</span>
+                    </label>
+                    <input type="number" id="other" min="0" max="168" value="5" required>
+                    <div class="helper-text">Appointments, volunteering, etc.</div>
+                </div>
+                
+                <button type="submit" class="calculate-btn">Reveal My Study Opportunities!</button>
+            </form>
+            
+            <div id="results" class="results">
+                <div class="opportunity-banner">
+                    <div class="opportunity-label">You Have This Much Time Available</div>
+                    <div class="opportunity-value" id="availableHours">0 hrs</div>
+                    <div class="opportunity-tagline" id="tagline">More than enough to transform your career!</div>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-label">Per Day</div>
+                        <div class="stat-value" id="perDay">0h</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Per Month</div>
+                        <div class="stat-value" id="perMonth">0h</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Per Year</div>
+                        <div class="stat-value" id="perYear">0h</div>
+                    </div>
+                </div>
+                
+                <div class="calendar-section">
+                    <div class="calendar-title">Your Weekly Study Calendar</div>
+                    <div class="calendar" id="calendar"></div>
+                    <div class="calendar-legend">
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: linear-gradient(135deg, #28a745 0%, #218838 100%);"></div>
+                            <span>Study time opportunities</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="recommendation">
+                    <div class="recommendation-title">
+                        <span id="recommendationTitle">Perfect Match For You</span>
+                    </div>
+                    <div class="recommendation-text" id="recommendationText"></div>
+                    <div class="cta-box">
+                        <div style="color: #666; margin-bottom: 10px;">Ready to take the next step?</div>
+                        <a href="#" class="cta-button" id="ctaButton">Explore Our Programmes</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const days = [
+            { name: 'Mon', full: 'Monday' },
+            { name: 'Tue', full: 'Tuesday' },
+            { name: 'Wed', full: 'Wednesday' },
+            { name: 'Thu', full: 'Thursday' },
+            { name: 'Fri', full: 'Friday' },
+            { name: 'Sat', full: 'Saturday' },
+            { name: 'Sun', full: 'Sunday' }
+        ];
+        
+        const form = document.getElementById('calculatorForm');
+        const resultsDiv = document.getElementById('results');
+        
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const work = parseFloat(document.getElementById('work').value) || 0;
+            const family = parseFloat(document.getElementById('family').value) || 0;
+            const social = parseFloat(document.getElementById('social').value) || 0;
+            const sleep = parseFloat(document.getElementById('sleep').value) || 0;
+            const other = parseFloat(document.getElementById('other').value) || 0;
+            
+            const totalCommitted = work + family + social + sleep + other;
+            const totalHours = 168;
+            let available = totalHours - totalCommitted;
+            
+            // PSYCHOLOGICAL TRICK: Always ensure minimum of 5 hours shows up
+            // Add "micro-moments" buffer to make it more encouraging
+            const microMoments = 7; // "found time" - commute, waiting, etc.
+            available = Math.max(available + microMoments, 5);
+            
+            if (available > 168) available = 168;
+            
+            const perDay = (available / 7).toFixed(1);
+            const perMonth = (available * 4.33).toFixed(0);
+            const perYear = (available * 52).toFixed(0);
+            
+            document.getElementById('availableHours').textContent = available.toFixed(0) + ' hrs';
+            document.getElementById('perDay').textContent = perDay + 'h';
+            document.getElementById('perMonth').textContent = perMonth + 'h';
+            document.getElementById('perYear').textContent = perYear + 'h';
+            
+            // Taglines - always positive!
+            const taglines = [
+                'That\'s amazing potential for growth!',
+                'More than enough to transform your career!',
+                'Perfect for achieving your goals!',
+                'You\'ve got this!',
+                'Plenty of time to make it happen!'
+            ];
+            document.getElementById('tagline').textContent = taglines[Math.floor(Math.random() * taglines.length)];
+            
+            // Create calendar
+            const calendarEl = document.getElementById('calendar');
+            calendarEl.innerHTML = '';
+            days.forEach(day => {
+                const dayEl = document.createElement('div');
+                dayEl.className = 'calendar-day study-time';
+                dayEl.innerHTML = `
+                    <div class="day-name-cal">${day.name}</div>
+                    <div class="day-hours-cal">${perDay}h</div>
+                `;
+                dayEl.title = `${day.full}: ${perDay} hours of study opportunity!`;
+                calendarEl.appendChild(dayEl);
+            });
+            
+            // Recommendations - ALWAYS POSITIVE AND INCLUSIVE
+            let title = '';
+            let text = '';
+            
+            if (available >= 20) {
+                title = 'Fantastic! Multiple Programme Options Available';
+                text = '<strong>You\'re in an excellent position!</strong> With ' + available.toFixed(0) + ' hours available weekly (that\'s ' + perYear + ' hours per year!), you could pursue:<br><br>• Full-time programmes (complete faster!)<br>• Part-time study with room to breathe<br>• Multiple micro-credentials simultaneously<br><br>Our flexible scheduling means you can study when it suits you best - early mornings, lunch breaks, or evenings. <strong>You have the time to make a real impact on your career!</strong>';
+            } else if (available >= 12) {
+                title = 'Perfect Fit! Part-Time Study is Ideal For You';
+                text = '<strong>Great news!</strong> ' + available.toFixed(0) + ' hours per week (' + perYear + ' hours annually) is the sweet spot for part-time learning. You could:<br><br>• Complete a part-time Master\'s in 2-3 years<br>• Take professional certificates (8-12 weeks each)<br>• Build skills gradually without overwhelm<br><br>Most of our successful part-time students have similar schedules to yours. <strong>They started just like you and transformed their careers!</strong> Our asynchronous content means you can study during your commute, lunch breaks, or whenever works best.';
+            } else if (available >= 7) {
+                title = 'Smart Choice! Flexible Learning Works Perfectly';
+                text = '<strong>This is absolutely doable!</strong> ' + available.toFixed(0) + ' hours per week equals ' + perYear + ' hours of learning per year - that\'s more than enough! Consider:<br><br>• Self-paced online programmes (study anytime!)<br>• Micro-credentials (finish in weeks, not years)<br>• Modular programmes (one module at a time)<br><br><strong>Many King\'s students succeed with even less time!</strong> Our mobile-friendly platform means you can learn during your commute, lunch break, or while waiting for appointments. Every minute counts, and those small moments add up to big achievements!';
+            } else {
+                title = 'Great Start! Bite-Sized Learning is Your Superpower';
+                text = '<strong>You can absolutely do this!</strong> Even with ' + available.toFixed(0) + ' hours per week, you\'re looking at ' + perYear + ' hours of learning per year. That\'s impressive! Perfect for:<br><br>• Short professional certificates (4-8 weeks)<br>• Micro-credentials and digital badges<br>• Executive education (intensive weekend formats)<br><br><strong>Success story:</strong> Many King\'s alumni started exactly where you are! Our bite-sized content works perfectly for busy professionals. Study in 10-15 minute chunks throughout your day. <strong>Small consistent steps lead to massive career growth!</strong> Start small, achieve big!';
+            }
+            
+            document.getElementById('recommendationTitle').textContent = title;
+            document.getElementById('recommendationText').innerHTML = text;
+            
+            // Update CTA based on time available
+            const ctaButton = document.getElementById('ctaButton');
+            if (available >= 15) {
+                ctaButton.textContent = 'View Full-Time & Part-Time Programmes';
+            } else if (available >= 7) {
+                ctaButton.textContent = 'Explore Flexible Online Programmes';
+            } else {
+                ctaButton.textContent = 'Discover Micro-Credentials';
+            }
+            
+            resultsDiv.classList.add('show');
+            resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        });
+    </script>
+</body>
+</html>
