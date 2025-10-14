@@ -623,9 +623,18 @@
                     </div>
                     
                     <div class="input-group">
-                        <label>Sleep (hours/week)</label>
-                        <input type="number" id="sleep" min="0" max="168" value="49" required>
-                        <div class="helper-text">Average: 7 hours per night</div>
+                        <label>Sleep Schedule</label>
+                        <select id="sleepSchedule">
+                            <option value="custom">Custom hours per week</option>
+                            <option value="35">Short sleeper: 11:30pm-6:30am (35 hrs/week)</option>
+                            <option value="42">Light sleeper: 11pm-6am (42 hrs/week)</option>
+                            <option value="49" selected>Average: 10:30pm-6am (49 hrs/week)</option>
+                            <option value="56">Good rest: 10pm-6am (56 hrs/week)</option>
+                            <option value="63">Extended rest: 9:30pm-6am (63 hrs/week)</option>
+                        </select>
+                        <input type="number" id="sleep" min="0" max="168" value="49" required style="display: none;">
+                        <div class="helper-text">Select your typical sleep pattern</div>
+                        <div id="sleepInsight" class="work-schedule-insight" style="display: none;"></div>
                     </div>
                     
                     <div class="input-group">
@@ -753,7 +762,11 @@
         const workInput = document.getElementById('work');
         const workScheduleSelect = document.getElementById('workSchedule');
         const workInsight = document.getElementById('workInsight');
+        const sleepInput = document.getElementById('sleep');
+        const sleepScheduleSelect = document.getElementById('sleepSchedule');
+        const sleepInsight = document.getElementById('sleepInsight');
         
+        // Handle work schedule dropdown
         workScheduleSelect.addEventListener('change', function() {
             if (this.value === 'custom') {
                 workInput.style.display = 'block';
@@ -762,6 +775,19 @@
                 workInput.style.display = 'none';
                 workInput.value = this.value;
                 updateWorkInsight(parseFloat(this.value));
+                updateSleepRecommendation(parseFloat(this.value));
+            }
+        });
+        
+        // Handle sleep schedule dropdown
+        sleepScheduleSelect.addEventListener('change', function() {
+            if (this.value === 'custom') {
+                sleepInput.style.display = 'block';
+                sleepInput.focus();
+            } else {
+                sleepInput.style.display = 'none';
+                sleepInput.value = this.value;
+                updateSleepInsight(parseFloat(this.value));
             }
         });
         
@@ -769,12 +795,97 @@
             workScheduleSelect.value = 'custom';
         });
         
+        sleepInput.addEventListener('focus', function() {
+            sleepScheduleSelect.value = 'custom';
+        });
+        
         workInput.addEventListener('input', function() {
             const hours = parseFloat(this.value) || 0;
             updateWorkInsight(hours);
+            updateSleepRecommendation(hours);
         });
         
+        sleepInput.addEventListener('input', function() {
+            const hours = parseFloat(this.value) || 0;
+            updateSleepInsight(hours);
+        });
+        
+        // Initialize with defaults
         updateWorkInsight(40);
+        updateSleepInsight(49);
+        
+        function updateSleepRecommendation(workHours) {
+            const dailyWork = workHours / 5;
+            
+            // Adjust sleep schedule recommendation based on work hours
+            if (dailyWork <= 8) {
+                // Standard work hours - recommend normal sleep
+                if (sleepScheduleSelect.value !== 'custom') {
+                    sleepScheduleSelect.value = '49'; // 10:30pm-6am
+                    sleepInput.value = '49';
+                    updateSleepInsight(49);
+                }
+            } else if (dailyWork > 10) {
+                // Long work hours - might need to adjust sleep
+                if (sleepScheduleSelect.value !== 'custom') {
+                    sleepScheduleSelect.value = '42'; // 11pm-6am (shorter to fit schedule)
+                    sleepInput.value = '42';
+                    updateSleepInsight(42);
+                }
+            }
+        }
+        
+        function updateSleepInsight(weeklyHours) {
+            if (weeklyHours === 0) {
+                sleepInsight.style.display = 'none';
+                return;
+            }
+            
+            const dailyAvg = (weeklyHours / 7).toFixed(1);
+            const sleepSchedule = analyzeSleepSchedule(dailyAvg);
+            
+            sleepInsight.style.display = 'block';
+            sleepInsight.innerHTML = `💤 ${dailyAvg} hours/night (${sleepSchedule.pattern}) - ${sleepSchedule.studyWindow}`;
+        }
+        
+        function analyzeSleepSchedule(dailyHours) {
+            if (dailyHours <= 5) {
+                return { 
+                    pattern: '12am-5am or similar',
+                    bedtime: '12:00am',
+                    wakeup: '5:00am',
+                    studyWindow: 'Study 9pm-11:30pm, morning 5:30am-8am'
+                };
+            } else if (dailyHours <= 6) {
+                return { 
+                    pattern: '11:30pm-5:30am or 12am-6am',
+                    bedtime: '11:30pm',
+                    wakeup: '5:30am',
+                    studyWindow: 'Study 9pm-11pm, morning 6am-8am'
+                };
+            } else if (dailyHours <= 7) {
+                return { 
+                    pattern: '11pm-6am',
+                    bedtime: '11:00pm',
+                    wakeup: '6:00am',
+                    studyWindow: 'Study 9pm-10:30pm, morning 6:30am-8am'
+                };
+            } else if (dailyHours <= 8) {
+                return { 
+                    pattern: '10:30pm-6:30am or 10pm-6am',
+                    bedtime: '10:30pm',
+                    wakeup: '6:30am',
+                    studyWindow: 'Study 8:30pm-10pm, morning 7am-8:30am'
+                };
+            } else {
+                return { 
+                    pattern: '10pm-6am or 9:30pm-6am',
+                    bedtime: '10:00pm',
+                    wakeup: '6:00am',
+                    studyWindow: 'Limited evening study, focus on weekends'
+                };
+            }
+        }
         
         function updateWorkInsight(weeklyHours) {
             if (weeklyHours === 0) {
@@ -856,32 +967,96 @@
         function createScheduleInsight(schedule, dailyWork, dailyStudy, weeklyStudy) {
             const insightBox = document.getElementById('scheduleInsightBox');
             
+            // Get sleep info
+            const sleepHours = parseFloat(sleepInput.value) || 49;
+            const dailySleep = sleepHours / 7;
+            const sleepSchedule = analyzeSleepSchedule(dailySleep);
+            
+            // Calculate specific study windows based on work and sleep
+            const studyWindows = calculateStudyWindows(schedule, sleepSchedule, dailyWork);
+            
             let studyTimeOptions = '';
             if (schedule.morningStudy && schedule.eveningStudy) {
-                studyTimeOptions = 'You have flexibility for <strong>both morning (before work)</strong> and <strong>evening (after work)</strong> study sessions.';
+                studyTimeOptions = `You have flexibility for <strong>morning (${studyWindows.morning})</strong> and <strong>evening (${studyWindows.evening})</strong> study sessions.`;
             } else if (schedule.eveningStudy) {
-                studyTimeOptions = 'Your best study opportunities are <strong>evenings after work</strong> and <strong>weekends</strong>.';
+                studyTimeOptions = `Your best study window is <strong>evenings (${studyWindows.evening})</strong> before bed at ${sleepSchedule.bedtime}, plus <strong>weekends</strong>.`;
             } else {
-                studyTimeOptions = 'Consider <strong>weekend-focused learning</strong> or adjusting your schedule to create weekday study time.';
+                studyTimeOptions = `With long work hours and sleep by ${sleepSchedule.bedtime}, focus on <strong>weekend-intensive learning</strong> or early morning sessions.`;
             }
             
-            const lunchBreak = dailyWork >= 7 ? '<div class="time-slot"><div class="time-slot-label">Lunch Break Option</div><div class="time-slot-value">30-60 min</div></div>' : '';
+            const lunchBreak = dailyWork >= 7 ? `<div class="time-slot"><div class="time-slot-label">Lunch Break</div><div class="time-slot-value">12-1pm</div></div>` : '';
             
             insightBox.innerHTML = `
                 <div class="schedule-insight-title">
-                    ⏰ Your Work Schedule Analysis
+                    ⏰ Your Personalized Study Schedule
                 </div>
                 <div class="schedule-insight-content">
-                    <p>Based on your <strong>${dailyWork} hours/day</strong> work commitment (${schedule.type} schedule, typically ${schedule.range}), we've identified your optimal study windows:</p>
+                    <p><strong>Work:</strong> ${dailyWork} hrs/day (${schedule.type}, ${schedule.range}) | <strong>Sleep:</strong> ${dailySleep.toFixed(1)} hrs/night (${sleepSchedule.bedtime} - ${sleepSchedule.wakeup})</p>
                     <p style="margin-top: 12px;">${studyTimeOptions}</p>
                     <div class="time-slots">
-                        ${schedule.morningStudy ? '<div class="time-slot"><div class="time-slot-label">Morning Sessions</div><div class="time-slot-value">6:30-8:30am</div></div>' : ''}
+                        ${studyWindows.morningSlot}
                         ${lunchBreak}
-                        ${schedule.eveningStudy ? '<div class="time-slot"><div class="time-slot-label">Evening Sessions</div><div class="time-slot-value">6:00-9:00pm</div></div>' : ''}
-                        <div class="time-slot"><div class="time-slot-label">Weekend Study</div><div class="time-slot-value">Flexible</div></div>
+                        ${studyWindows.eveningSlot}
+                        <div class="time-slot"><div class="time-slot-label">Weekend Study</div><div class="time-slot-value">Flexible blocks</div></div>
                     </div>
+                    <p style="margin-top: 16px; font-size: 14px;"><strong>💡 Pro Tip:</strong> ${studyWindows.tip}</p>
                 </div>
             `;
+        }
+        
+        function calculateStudyWindows(workSchedule, sleepSchedule, dailyWork) {
+            let morning = '';
+            let evening = '';
+            let morningSlot = '';
+            let eveningSlot = '';
+            let tip = '';
+            
+            // Parse wake up and bedtime
+            const wakeHour = parseInt(sleepSchedule.wakeup.split(':')[0]) || 6;
+            const bedHour = parseInt(sleepSchedule.bedtime.split(':')[0]) || 22;
+            const bedMinutes = sleepSchedule.bedtime.includes(':30') ? 30 : 0;
+            
+            // Calculate morning study window (wake up to work start, assuming 30 min to get ready + commute)
+            if (workSchedule.morningStudy) {
+                const studyStartHour = wakeHour;
+                const studyEndHour = dailyWork <= 4 ? 8 : (dailyWork <= 6 ? 8.5 : 8);
+                morning = `${studyStartHour}:30am-${Math.floor(studyEndHour)}:${studyEndHour % 1 === 0.5 ? '30' : '00'}am`;
+                morningSlot = `<div class="time-slot"><div class="time-slot-label">Morning Study</div><div class="time-slot-value">${morning}</div></div>`;
+            }
+            
+            // Calculate evening study window (work end to bedtime)
+            if (workSchedule.eveningStudy) {
+                // Work ends around 5pm for standard, 6pm for extended, 7pm for long
+                const workEndHour = dailyWork <= 8 ? 17 : (dailyWork <= 10 ? 18 : 19);
+                const dinnerBuffer = 1; // 1 hour for dinner
+                const studyStartHour = workEndHour + dinnerBuffer;
+                
+                // Study until 1 hour before bedtime to wind down
+                const studyEndHour = bedHour - (bedMinutes === 30 ? 0.5 : 1);
+                
+                const formatHour = (h) => {
+                    const hour = Math.floor(h);
+                    const minutes = h % 1 === 0.5 ? ':30' : ':00';
+                    const period = hour >= 12 ? 'pm' : 'am';
+                    const displayHour = hour > 12 ? hour - 12 : hour;
+                    return `${displayHour}${minutes}${period}`;
+                };
+                
+                evening = `${formatHour(studyStartHour)}-${formatHour(studyEndHour)}`;
+                eveningSlot = `<div class="time-slot"><div class="time-slot-label">Evening Study</div><div class="time-slot-value">${evening}</div></div>`;
+            }
+            
+            // Generate personalized tip
+            if (workSchedule.morningStudy && workSchedule.eveningStudy) {
+                tip = `Split your ${dailyWork <= 6 ? '2-3' : '1-2'} hour daily study: morning for reading/lectures, evening for practice/assignments.`;
+            } else if (workSchedule.eveningStudy) {
+                const eveningHours = bedHour - 18 - 1; // Work end (6pm) to bedtime minus 1hr
+                tip = `You have approximately ${eveningHours} hours each evening. Use first hour for lighter study, save complex work for weekends.`;
+            } else {
+                tip = `With your demanding schedule, weekend 3-4 hour blocks will be most productive. Consider 9am-1pm Saturday and Sunday.`;
+            }
+            
+            return { morning, evening, morningSlot, eveningSlot, tip };
         }
         
         function createCharts(work, sleep, meals, family, social, other, available) {
