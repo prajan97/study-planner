@@ -701,16 +701,11 @@
                     </div>
                     
                     <div class="chart-container">
-                        <div class="chart-title">Study Capacity Analysis</div>
+                        <div class="chart-title">Available vs Committed Time</div>
                         <div class="chart-wrapper">
                             <canvas id="barChart"></canvas>
                         </div>
                     </div>
-                </div>
-                
-                <div class="calendar-section">
-                    <div class="calendar-title">Your Weekly Study Schedule</div>
-                    <div class="calendar" id="calendar"></div>
                 </div>
                 
                 <div class="recommendation">
@@ -955,7 +950,6 @@
             
             createScheduleInsight(workSchedule, dailyWork, perDay, available);
             createCharts(work, sleep, meals, family, social, other, available);
-            createCalendar(perDay);
             generateRecommendation(available, perYear, workSchedule);
             
             resultsDiv.classList.add('show');
@@ -975,16 +969,30 @@
             // Calculate specific study windows based on work and sleep
             const studyWindows = calculateStudyWindows(schedule, sleepSchedule, dailyWork);
             
-            let studyTimeOptions = '';
-            if (schedule.morningStudy && schedule.eveningStudy) {
-                studyTimeOptions = `You have flexibility for <strong>morning (${studyWindows.morning})</strong> and <strong>evening (${studyWindows.evening})</strong> study sessions.`;
-            } else if (schedule.eveningStudy) {
-                studyTimeOptions = `Your best study window is <strong>evenings (${studyWindows.evening})</strong> before bed at ${sleepSchedule.bedtime}, plus <strong>weekends</strong>.`;
-            } else {
-                studyTimeOptions = `With long work hours and sleep by ${sleepSchedule.bedtime}, focus on <strong>weekend-intensive learning</strong> or early morning sessions.`;
+            // Calculate realistic buffer time
+            let bufferInfo = '';
+            if (schedule.eveningStudy) {
+                if (dailyWork <= 4) {
+                    bufferInfo = ' (allowing 1.5 hours for commute, dinner, and settling in)';
+                } else if (dailyWork <= 8) {
+                    bufferInfo = ' (allowing 2+ hours for commute, dinner, and decompression)';
+                } else if (dailyWork <= 10) {
+                    bufferInfo = ' (allowing 2.5 hours for commute, dinner, and rest - you need it!)';
+                } else {
+                    bufferInfo = ' (allowing 2.75 hours for long commute, dinner, and recovery)';
+                }
             }
             
-            const lunchBreak = dailyWork >= 7 ? `<div class="time-slot"><div class="time-slot-label">Lunch Break</div><div class="time-slot-value">12-1pm</div></div>` : '';
+            let studyTimeOptions = '';
+            if (schedule.morningStudy && schedule.eveningStudy) {
+                studyTimeOptions = `You have flexibility for <strong>morning (${studyWindows.morning})</strong> and <strong>evening (${studyWindows.evening})</strong> study sessions${bufferInfo}.`;
+            } else if (schedule.eveningStudy) {
+                studyTimeOptions = `Your best study window is <strong>evenings (${studyWindows.evening || 'limited'})</strong>${bufferInfo}, plus <strong>weekends</strong> for extended sessions.`;
+            } else {
+                studyTimeOptions = `With long work hours and sleep by ${sleepSchedule.bedtime}, focus on <strong>weekend-intensive learning</strong>. Weekday evenings offer minimal quality study time after commute and recovery.`;
+            }
+            
+            const lunchBreak = dailyWork >= 7 ? `<div class="time-slot"><div class="time-slot-label">Lunch Break</div><div class="time-slot-value">30-45 min</div></div>` : '';
             
             insightBox.innerHTML = `
                 <div class="schedule-insight-title">
@@ -1013,10 +1021,21 @@
             
             // Parse wake up and bedtime
             const wakeHour = parseInt(sleepSchedule.wakeup.split(':')[0]) || 6;
-            const bedHour = parseInt(sleepSchedule.bedtime.split(':')[0]) || 22;
+            const bedtimeStr = sleepSchedule.bedtime;
+            let bedHour = parseInt(bedtimeStr.split(':')[0]);
+            
+            // Handle 12am as midnight (0) and pm times properly
+            if (bedtimeStr.includes('am') && bedHour === 12) {
+                bedHour = 0;
+            } else if (bedtimeStr.includes('pm') && bedHour !== 12) {
+                bedHour += 12;
+            } else if (bedtimeStr.includes('am') && bedHour < 6) {
+                bedHour += 24; // Next day midnight-6am becomes 24-30
+            }
+            
             const bedMinutes = sleepSchedule.bedtime.includes(':30') ? 30 : 0;
             
-            // Calculate morning study window (wake up to work start, assuming 30 min to get ready + commute)
+            // Calculate morning study window
             if (workSchedule.morningStudy) {
                 const studyStartHour = wakeHour;
                 const studyEndHour = dailyWork <= 4 ? 8 : (dailyWork <= 6 ? 8.5 : 8);
@@ -1024,36 +1043,58 @@
                 morningSlot = `<div class="time-slot"><div class="time-slot-label">Morning Study</div><div class="time-slot-value">${morning}</div></div>`;
             }
             
-            // Calculate evening study window (work end to bedtime)
+            // Calculate evening study window with REALISTIC buffers
             if (workSchedule.eveningStudy) {
-                // Work ends around 5pm for standard, 6pm for extended, 7pm for long
                 const workEndHour = dailyWork <= 8 ? 17 : (dailyWork <= 10 ? 18 : 19);
-                const dinnerBuffer = 1; // 1 hour for dinner
-                const studyStartHour = workEndHour + dinnerBuffer;
                 
-                // Study until 1 hour before bedtime to wind down
+                // Realistic buffer calculation
+                // Includes: commute + decompress + dinner + cleanup
+                let buffer;
+                if (dailyWork <= 4) {
+                    buffer = 1.5; // 30min commute + 10min decompress + 60min dinner + 15min cleanup = ~1.5hrs
+                } else if (dailyWork <= 8) {
+                    buffer = 2.25; // 45min commute + 15min decompress + 60min dinner + 15min cleanup = ~2.25hrs
+                } else if (dailyWork <= 10) {
+                    buffer = 2.5; // 60min commute + 20min decompress + 60min dinner + 15min cleanup = ~2.5hrs
+                } else {
+                    buffer = 2.75; // 60min commute + 30min decompress + 60min dinner + 15min cleanup = ~2.75hrs (exhausted)
+                }
+                
+                const studyStartHour = workEndHour + buffer;
+                
+                // Study until 1 hour before bedtime
                 const studyEndHour = bedHour - (bedMinutes === 30 ? 0.5 : 1);
                 
                 const formatHour = (h) => {
-                    const hour = Math.floor(h);
-                    const minutes = h % 1 === 0.5 ? ':30' : ':00';
-                    const period = hour >= 12 ? 'pm' : 'am';
-                    const displayHour = hour > 12 ? hour - 12 : hour;
-                    return `${displayHour}${minutes}${period}`;
+                    const hour24 = Math.floor(h);
+                    const minutes = Math.round((h % 1) * 60);
+                    const period = hour24 >= 12 ? 'pm' : 'am';
+                    let displayHour = hour24 > 12 ? hour24 - 12 : hour24;
+                    if (displayHour === 0) displayHour = 12;
+                    const minuteStr = minutes > 0 ? `:${minutes.toString().padStart(2, '0')}` : '';
+                    return `${displayHour}${minuteStr}${period}`;
                 };
                 
-                evening = `${formatHour(studyStartHour)}-${formatHour(studyEndHour)}`;
-                eveningSlot = `<div class="time-slot"><div class="time-slot-label">Evening Study</div><div class="time-slot-value">${evening}</div></div>`;
+                // Check if there's actually time available
+                const availableEvening = studyEndHour - studyStartHour;
+                
+                if (availableEvening >= 1) {
+                    evening = `${formatHour(studyStartHour)}-${formatHour(studyEndHour)}`;
+                    eveningSlot = `<div class="time-slot"><div class="time-slot-label">Evening Study</div><div class="time-slot-value">${evening}</div></div>`;
+                } else {
+                    // Not enough time in evening
+                    eveningSlot = `<div class="time-slot" style="opacity: 0.6;"><div class="time-slot-label">Evening Study</div><div class="time-slot-value">Limited time</div></div>`;
+                }
             }
             
-            // Generate personalized tip
+            // Generate personalized tip with realistic buffer info
             if (workSchedule.morningStudy && workSchedule.eveningStudy) {
-                tip = `Split your ${dailyWork <= 6 ? '2-3' : '1-2'} hour daily study: morning for reading/lectures, evening for practice/assignments.`;
+                tip = `Split your study time: mornings for reading/lectures, evenings for practice. Allow 1.5-2 hours after work for commute, dinner, and rest before studying.`;
             } else if (workSchedule.eveningStudy) {
-                const eveningHours = bedHour - 18 - 1; // Work end (6pm) to bedtime minus 1hr
-                tip = `You have approximately ${eveningHours} hours each evening. Use first hour for lighter study, save complex work for weekends.`;
+                const bufferHours = dailyWork <= 8 ? '2-2.5' : '2.5-3';
+                tip = `Realistic evening study starts ${bufferHours} hours after work ends (commute + dinner + decompression). Use weekends for deep focus work requiring 3+ hour blocks.`;
             } else {
-                tip = `With your demanding schedule, weekend 3-4 hour blocks will be most productive. Consider 9am-1pm Saturday and Sunday.`;
+                tip = `With your demanding schedule and long commute, weekend 3-4 hour blocks will be most productive. Consider 9am-1pm Saturday and Sunday mornings when you're fresh.`;
             }
             
             return { morning, evening, morningSlot, eveningSlot, tip };
@@ -1100,18 +1141,18 @@
                 }
             });
             
+            const totalCommitted = work + sleep + meals + family + social + other;
+            
             barChart = new Chart(barCtx, {
                 type: 'bar',
                 data: {
-                    labels: ['Current', 'Minimum', 'Recommended', 'Ideal'],
+                    labels: ['Available', 'Committed'],
                     datasets: [{
-                        label: 'Study Hours',
-                        data: [available, 5, 10, 15],
+                        label: 'Hours per Week',
+                        data: [available, totalCommitted],
                         backgroundColor: [
                             '#28a745',
-                            '#ffc107',
-                            '#17a2b8',
-                            '#e52d27'
+                            '#dc3545'
                         ],
                         borderRadius: 8,
                         borderWidth: 0
@@ -1126,7 +1167,8 @@
                     scales: {
                         y: {
                             beginAtZero: true,
-                            grid: { display: false },
+                            max: 168,
+                            grid: { display: true, color: '#e9ecef' },
                             ticks: { font: { weight: '600' } }
                         },
                         x: {
@@ -1139,18 +1181,7 @@
         }
         
         function createCalendar(perDay) {
-            const calendarEl = document.getElementById('calendar');
-            calendarEl.innerHTML = '';
-            days.forEach(day => {
-                const dayEl = document.createElement('div');
-                dayEl.className = 'calendar-day study-time';
-                dayEl.innerHTML = `
-                    <div class="day-name-cal">${day.name}</div>
-                    <div class="day-hours-cal">${perDay}h</div>
-                `;
-                dayEl.title = `${day.full}: ${perDay} hours available for study`;
-                calendarEl.appendChild(dayEl);
-            });
+            // Calendar function removed as per request
         }
         
         function generateRecommendation(available, perYear, workSchedule) {
