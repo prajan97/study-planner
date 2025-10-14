@@ -3,22 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enhanced Study Planner - King's College London</title>
+    <title>Smart Study Planner - King's College London</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: linear-gradient(135deg, #e52d27 0%, #b31217 100%);
             min-height: 100vh;
             padding: 20px;
         }
-        
         .container {
             max-width: 1000px;
             margin: 0 auto;
@@ -27,70 +21,32 @@
             box-shadow: 0 30px 90px rgba(0,0,0,0.3);
             overflow: hidden;
         }
-        
         .header {
             background: linear-gradient(135deg, #e52d27 0%, #b31217 100%);
             color: white;
             padding: 60px 40px;
             text-align: center;
-            position: relative;
         }
-        
-        .header h1 {
-            font-size: 36px;
-            margin-bottom: 12px;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-        }
-        
-        .header .subtitle {
-            font-size: 18px;
-            opacity: 0.95;
-            font-weight: 400;
-        }
-        
-        .header .uni-name {
-            margin-top: 15px;
-            font-size: 13px;
-            font-weight: 600;
-            letter-spacing: 2px;
-            opacity: 0.85;
-        }
-        
-        .content {
-            padding: 50px 40px;
-        }
-        
+        .header h1 { font-size: 36px; margin-bottom: 12px; font-weight: 700; }
+        .header .subtitle { font-size: 18px; opacity: 0.95; }
+        .header .uni-name { margin-top: 15px; font-size: 13px; font-weight: 600; letter-spacing: 2px; opacity: 0.85; }
+        .content { padding: 50px 40px; }
         .intro-text {
             background: #f8f9fa;
             padding: 24px;
             border-radius: 12px;
             margin-bottom: 30px;
             border-left: 4px solid #e52d27;
-        }
-        
-        .intro-text p {
             color: #495057;
             line-height: 1.7;
-            font-size: 15px;
         }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
         .form-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 24px;
             margin-bottom: 30px;
         }
-        
-        .input-group {
-            position: relative;
-        }
-        
+        .input-group { position: relative; }
         label {
             display: block;
             margin-bottom: 10px;
@@ -98,7 +54,6 @@
             color: #212529;
             font-size: 15px;
         }
-        
         select, input[type="number"] {
             width: 100%;
             padding: 16px;
@@ -108,26 +63,13 @@
             transition: all 0.3s ease;
             background: white;
             font-weight: 500;
-            cursor: pointer;
         }
-        
         select:focus, input[type="number"]:focus {
             outline: none;
             border-color: #e52d27;
             box-shadow: 0 0 0 4px rgba(229, 45, 39, 0.1);
         }
-        
-        input[type="number"] {
-            cursor: text;
-        }
-        
-        .helper-text {
-            font-size: 13px;
-            color: #6c757d;
-            margin-top: 6px;
-            line-height: 1.4;
-        }
-        
+        .helper-text { font-size: 13px; color: #6c757d; margin-top: 6px; }
         .work-schedule-insight {
             background: linear-gradient(135deg, #e8f4f8 0%, #d4e9f2 100%);
             padding: 16px;
@@ -138,7 +80,6 @@
             color: #0c5460;
             font-weight: 500;
         }
-        
         .calculate-btn {
             width: 100%;
             padding: 18px;
@@ -152,63 +93,29 @@
             transition: all 0.3s ease;
             margin-top: 20px;
             box-shadow: 0 8px 20px rgba(229, 45, 39, 0.25);
-            letter-spacing: 0.3px;
         }
-        
         .calculate-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 12px 30px rgba(229, 45, 39, 0.35);
         }
-        
-        .calculate-btn:active {
-            transform: translateY(0);
-        }
-        
         .results {
             margin-top: 40px;
             display: none;
-        }
-        
-        .results.show {
-            display: block;
             animation: fadeInUp 0.6s ease-out;
         }
-        
+        .results.show { display: block; }
         @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-        
-        .results-header {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-        
-        .results-header h2 {
-            font-size: 32px;
-            color: #212529;
-            margin-bottom: 8px;
-            font-weight: 700;
-        }
-        
-        .results-header p {
-            color: #6c757d;
-            font-size: 16px;
-        }
-        
+        .results-header { text-align: center; margin-bottom: 40px; }
+        .results-header h2 { font-size: 32px; color: #212529; margin-bottom: 8px; font-weight: 700; }
         .stats-showcase {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 20px;
             margin-bottom: 40px;
         }
-        
         .stat-box {
             background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%);
             padding: 24px;
@@ -217,13 +124,11 @@
             border: 2px solid #e9ecef;
             transition: all 0.3s ease;
         }
-        
         .stat-box:hover {
             border-color: #e52d27;
             transform: translateY(-4px);
             box-shadow: 0 8px 20px rgba(0,0,0,0.08);
         }
-        
         .stat-label {
             font-size: 12px;
             color: #6c757d;
@@ -232,14 +137,7 @@
             letter-spacing: 1px;
             font-weight: 600;
         }
-        
-        .stat-value {
-            font-size: 36px;
-            font-weight: 800;
-            color: #e52d27;
-            line-height: 1;
-        }
-        
+        .stat-value { font-size: 36px; font-weight: 800; color: #e52d27; }
         .schedule-insight-box {
             background: linear-gradient(135deg, #fff9e6 0%, #ffeaa7 100%);
             padding: 30px;
@@ -247,30 +145,19 @@
             margin-bottom: 40px;
             border-left: 6px solid #ffc107;
         }
-        
         .schedule-insight-title {
             font-size: 20px;
             font-weight: 700;
             color: #856404;
             margin-bottom: 16px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
         }
-        
-        .schedule-insight-content {
-            color: #856404;
-            line-height: 1.7;
-            font-size: 15px;
-        }
-        
+        .schedule-insight-content { color: #856404; line-height: 1.7; font-size: 15px; }
         .time-slots {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 16px;
             margin-top: 20px;
         }
-        
         .time-slot {
             background: white;
             padding: 16px;
@@ -278,36 +165,21 @@
             border: 2px solid #ffc107;
             text-align: center;
         }
-        
         .time-slot-label {
             font-size: 12px;
             color: #856404;
             font-weight: 600;
             margin-bottom: 8px;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
         }
-        
-        .time-slot-value {
-            font-size: 20px;
-            font-weight: 700;
-            color: #856404;
-        }
-        
+        .time-slot-value { font-size: 20px; font-weight: 700; color: #856404; }
         .visualization-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 30px;
             margin-bottom: 40px;
         }
-        
-        .chart-container {
-            background: #f8f9fa;
-            padding: 30px;
-            border-radius: 16px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-        }
-        
+        .chart-container { background: #f8f9fa; padding: 30px; border-radius: 16px; }
         .chart-title {
             font-size: 16px;
             font-weight: 700;
@@ -315,67 +187,7 @@
             margin-bottom: 20px;
             text-align: center;
         }
-        
-        .chart-wrapper {
-            position: relative;
-            height: 280px;
-        }
-        
-        .calendar-section {
-            background: #f8f9fa;
-            padding: 35px;
-            border-radius: 16px;
-            margin-bottom: 40px;
-        }
-        
-        .calendar-title {
-            font-size: 20px;
-            font-weight: 700;
-            color: #212529;
-            margin-bottom: 24px;
-            text-align: center;
-        }
-        
-        .calendar {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 12px;
-        }
-        
-        .calendar-day {
-            background: white;
-            border-radius: 12px;
-            padding: 20px 12px;
-            text-align: center;
-            transition: all 0.3s ease;
-            border: 2px solid #dee2e6;
-            cursor: pointer;
-        }
-        
-        .calendar-day:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
-        }
-        
-        .calendar-day.study-time {
-            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
-            color: white;
-            border-color: #28a745;
-        }
-        
-        .day-name-cal {
-            font-size: 12px;
-            font-weight: 700;
-            margin-bottom: 8px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        
-        .day-hours-cal {
-            font-size: 24px;
-            font-weight: 800;
-        }
-        
+        .chart-wrapper { position: relative; height: 280px; }
         .recommendation {
             background: linear-gradient(135deg, #fff5f5 0%, #ffe8e8 100%);
             padding: 35px;
@@ -383,32 +195,20 @@
             border-left: 6px solid #e52d27;
             margin-bottom: 30px;
         }
-        
         .recommendation-title {
             font-size: 24px;
             font-weight: 700;
             color: #e52d27;
             margin-bottom: 16px;
         }
-        
-        .recommendation-text {
-            color: #495057;
-            line-height: 1.8;
-            font-size: 15px;
-        }
-        
-        .recommendation-text strong {
-            color: #e52d27;
-            font-weight: 600;
-        }
-        
+        .recommendation-text { color: #495057; line-height: 1.8; font-size: 15px; }
+        .recommendation-text strong { color: #e52d27; font-weight: 600; }
         .programme-suggestions {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 20px;
             margin-top: 20px;
         }
-        
         .programme-card {
             background: white;
             padding: 20px;
@@ -416,32 +216,18 @@
             border: 2px solid #e52d27;
             transition: all 0.3s ease;
         }
-        
         .programme-card:hover {
             transform: translateY(-4px);
             box-shadow: 0 8px 20px rgba(229, 45, 39, 0.2);
         }
-        
-        .programme-name {
-            font-size: 16px;
-            font-weight: 700;
-            color: #e52d27;
-            margin-bottom: 8px;
-        }
-        
-        .programme-details {
-            font-size: 14px;
-            color: #495057;
-            line-height: 1.6;
-        }
-        
+        .programme-name { font-size: 16px; font-weight: 700; color: #e52d27; margin-bottom: 8px; }
+        .programme-details { font-size: 14px; color: #495057; line-height: 1.6; }
         .action-buttons {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 16px;
             margin-top: 40px;
         }
-        
         .btn {
             padding: 16px 24px;
             border-radius: 10px;
@@ -451,161 +237,43 @@
             transition: all 0.3s ease;
             border: none;
             text-align: center;
-            letter-spacing: 0.3px;
         }
-        
         .btn-primary {
             background: linear-gradient(135deg, #e52d27 0%, #b31217 100%);
             color: white;
             box-shadow: 0 4px 12px rgba(229, 45, 39, 0.25);
         }
-        
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(229, 45, 39, 0.35);
-        }
-        
+        .btn-primary:hover { transform: translateY(-2px); }
         .btn-secondary {
             background: white;
             color: #e52d27;
             border: 2px solid #e52d27;
         }
-        
-        .btn-secondary:hover {
-            background: #e52d27;
-            color: white;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(229, 45, 39, 0.2);
-        }
-        
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.6);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .modal.show {
-            display: flex;
-        }
-        
-        .modal-content {
-            background: white;
-            padding: 40px;
-            border-radius: 16px;
-            max-width: 500px;
-            width: 90%;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            animation: modalSlideIn 0.3s ease-out;
-        }
-        
-        @keyframes modalSlideIn {
-            from {
-                opacity: 0;
-                transform: translateY(-50px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        .modal-header {
-            font-size: 24px;
-            font-weight: 700;
-            color: #212529;
-            margin-bottom: 24px;
-        }
-        
-        .modal-body {
-            margin-bottom: 24px;
-        }
-        
-        .modal-body input {
-            width: 100%;
-            padding: 14px;
-            border: 2px solid #dee2e6;
-            border-radius: 8px;
-            font-size: 15px;
-            margin-bottom: 12px;
-        }
-        
-        .modal-body input:focus {
-            outline: none;
-            border-color: #e52d27;
-        }
-        
-        .modal-footer {
-            display: flex;
-            gap: 12px;
-        }
-        
-        .modal-footer button {
-            flex: 1;
-        }
-        
+        .btn-secondary:hover { background: #e52d27; color: white; }
         @media (max-width: 768px) {
-            .content {
-                padding: 30px 20px;
-            }
-            
-            .form-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .visualization-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .stats-showcase {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            
-            .action-buttons {
-                grid-template-columns: 1fr;
-            }
-            
-            .calendar {
-                gap: 8px;
-            }
-            
-            .calendar-day {
-                padding: 12px 8px;
-            }
-            
-            .day-hours-cal {
-                font-size: 18px;
-            }
-            
-            .time-slots {
-                grid-template-columns: 1fr;
-            }
+            .stats-showcase { grid-template-columns: repeat(2, 1fr); }
+            .visualization-grid { grid-template-columns: 1fr; }
+            .time-slots { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>Enhanced Study Planner</h1>
-            <div class="subtitle">Discover your personalised learning pathway</div>
+            <h1>Smart Study Planner</h1>
+            <div class="subtitle">Realistic recommendations for your actual schedule</div>
             <div class="uni-name">KING'S COLLEGE LONDON</div>
         </div>
         
         <div class="content">
             <div class="intro-text">
-                <p><strong>Welcome to your personalised study planning tool.</strong> Complete the form below to get an accurate picture of your available study time. Our flexible programmes are designed to fit around your life.</p>
+                <p><strong>Get realistic study recommendations.</strong> Our smart system accounts for commute time, rest, and meal preparation to give you achievable study windows.</p>
             </div>
             
             <form id="calculatorForm">
                 <div class="form-grid">
                     <div class="input-group">
-                        <label>Work & Commute</label>
+                        <label>Work & Commute Schedule</label>
                         <select id="workSchedule">
                             <option value="custom">Custom hours per week</option>
                             <option value="20">Part-time: 9am-1pm (20 hrs/week)</option>
@@ -618,7 +286,7 @@
                             <option value="60">Long hours: 7am-7pm (60 hrs/week)</option>
                         </select>
                         <input type="number" id="work" min="0" max="168" value="40" required style="display: none;">
-                        <div class="helper-text">Select your typical schedule or enter custom hours</div>
+                        <div class="helper-text">Select your typical work schedule</div>
                         <div id="workInsight" class="work-schedule-insight" style="display: none;"></div>
                     </div>
                     
@@ -626,19 +294,19 @@
                         <label>Sleep Schedule</label>
                         <select id="sleepSchedule">
                             <option value="custom">Custom hours per week</option>
-                            <option value="35">Short sleeper: 11:30pm-6:30am (35 hrs/week)</option>
-                            <option value="42">Light sleeper: 11pm-6am (42 hrs/week)</option>
+                            <option value="35">Short: 11:30pm-6:30am (35 hrs/week)</option>
+                            <option value="42">Light: 11pm-6am (42 hrs/week)</option>
                             <option value="49" selected>Average: 10:30pm-6am (49 hrs/week)</option>
-                            <option value="56">Good rest: 10pm-6am (56 hrs/week)</option>
-                            <option value="63">Extended rest: 9:30pm-6am (63 hrs/week)</option>
+                            <option value="56">Good: 10pm-6am (56 hrs/week)</option>
+                            <option value="63">Extended: 9:30pm-6am (63 hrs/week)</option>
                         </select>
                         <input type="number" id="sleep" min="0" max="168" value="49" required style="display: none;">
-                        <div class="helper-text">Select your typical sleep pattern</div>
+                        <div class="helper-text">Select your sleep pattern</div>
                         <div id="sleepInsight" class="work-schedule-insight" style="display: none;"></div>
                     </div>
                     
                     <div class="input-group">
-                        <label>Meals & Food Preparation (hours/week)</label>
+                        <label>Meals & Food Prep (hours/week)</label>
                         <input type="number" id="meals" min="0" max="168" value="14" required>
                         <div class="helper-text">Cooking, eating, shopping</div>
                     </div>
@@ -650,25 +318,25 @@
                     </div>
                     
                     <div class="input-group">
-                        <label>Social & Leisure Time (hours/week)</label>
+                        <label>Social & Leisure (hours/week)</label>
                         <input type="number" id="social" min="0" max="168" value="25" required>
-                        <div class="helper-text">Friends, hobbies, entertainment, exercise</div>
+                        <div class="helper-text">Friends, hobbies, exercise</div>
                     </div>
                     
                     <div class="input-group">
                         <label>Other Commitments (hours/week)</label>
                         <input type="number" id="other" min="0" max="168" value="10" required>
-                        <div class="helper-text">Appointments, volunteering, errands</div>
+                        <div class="helper-text">Appointments, errands</div>
                     </div>
                 </div>
                 
-                <button type="submit" class="calculate-btn">Generate My Study Plan</button>
+                <button type="submit" class="calculate-btn">Generate Smart Study Plan</button>
             </form>
             
             <div id="results" class="results">
                 <div class="results-header">
-                    <h2>Your Personalised Study Plan</h2>
-                    <p>Based on your schedule analysis</p>
+                    <h2>Your Realistic Study Plan</h2>
+                    <p>Based on your actual schedule</p>
                 </div>
                 
                 <div class="stats-showcase">
@@ -701,7 +369,7 @@
                     </div>
                     
                     <div class="chart-container">
-                        <div class="chart-title">Available vs Committed Time</div>
+                        <div class="chart-title">Available vs Committed</div>
                         <div class="chart-wrapper">
                             <canvas id="barChart"></canvas>
                         </div>
@@ -709,51 +377,21 @@
                 </div>
                 
                 <div class="recommendation">
-                    <div class="recommendation-title" id="recommendationTitle">Your Programme Recommendations</div>
+                    <div class="recommendation-title" id="recommendationTitle">Programme Recommendations</div>
                     <div class="recommendation-text" id="recommendationText"></div>
                     <div id="programmeSuggestions" class="programme-suggestions"></div>
                 </div>
                 
                 <div class="action-buttons">
-                    <button class="btn btn-primary" id="emailBtn">Email My Study Plan</button>
-                    <button class="btn btn-secondary" id="downloadBtn">Download as PDF</button>
+                    <button class="btn btn-primary" onclick="window.print()">Download PDF</button>
+                    <button class="btn btn-secondary" onclick="alert('Contact: admissions@kcl.ac.uk')">Contact Us</button>
                 </div>
             </div>
         </div>
     </div>
     
-    <div id="emailModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">Email Your Study Plan</div>
-            <div class="modal-body">
-                <input type="text" id="userName" placeholder="Your Name" required>
-                <input type="email" id="userEmail" placeholder="Your Email Address" required>
-                <p style="font-size: 13px; color: #6c757d; margin-top: 12px;">We'll send you a detailed PDF of your personalised study plan and information about relevant programmes at King's College London.</p>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" id="closeModal">Cancel</button>
-                <button class="btn btn-primary" id="sendEmail">Send Plan</button>
-            </div>
-        </div>
-    </div>
-    
     <script>
-        const days = [
-            { name: 'Mon', full: 'Monday' },
-            { name: 'Tue', full: 'Tuesday' },
-            { name: 'Wed', full: 'Wednesday' },
-            { name: 'Thu', full: 'Thursday' },
-            { name: 'Fri', full: 'Friday' },
-            { name: 'Sat', full: 'Saturday' },
-            { name: 'Sun', full: 'Sunday' }
-        ];
-        
         let pieChart, barChart;
-        let currentData = {};
-        
-        const form = document.getElementById('calculatorForm');
-        const resultsDiv = document.getElementById('results');
-        const emailModal = document.getElementById('emailModal');
         const workInput = document.getElementById('work');
         const workScheduleSelect = document.getElementById('workSchedule');
         const workInsight = document.getElementById('workInsight');
@@ -761,24 +399,19 @@
         const sleepScheduleSelect = document.getElementById('sleepSchedule');
         const sleepInsight = document.getElementById('sleepInsight');
         
-        // Handle work schedule dropdown
         workScheduleSelect.addEventListener('change', function() {
             if (this.value === 'custom') {
                 workInput.style.display = 'block';
-                workInput.focus();
             } else {
                 workInput.style.display = 'none';
                 workInput.value = this.value;
                 updateWorkInsight(parseFloat(this.value));
-                updateSleepRecommendation(parseFloat(this.value));
             }
         });
         
-        // Handle sleep schedule dropdown
         sleepScheduleSelect.addEventListener('change', function() {
             if (this.value === 'custom') {
                 sleepInput.style.display = 'block';
-                sleepInput.focus();
             } else {
                 sleepInput.style.display = 'none';
                 sleepInput.value = this.value;
@@ -786,318 +419,146 @@
             }
         });
         
-        workInput.addEventListener('focus', function() {
-            workScheduleSelect.value = 'custom';
-        });
-        
-        sleepInput.addEventListener('focus', function() {
-            sleepScheduleSelect.value = 'custom';
-        });
-        
-        workInput.addEventListener('input', function() {
-            const hours = parseFloat(this.value) || 0;
-            updateWorkInsight(hours);
-            updateSleepRecommendation(hours);
-        });
-        
-        sleepInput.addEventListener('input', function() {
-            const hours = parseFloat(this.value) || 0;
-            updateSleepInsight(hours);
-        });
-        
-        // Initialize with defaults
         updateWorkInsight(40);
         updateSleepInsight(49);
         
-        function updateSleepRecommendation(workHours) {
-            const dailyWork = workHours / 5;
-            
-            // Adjust sleep schedule recommendation based on work hours
-            if (dailyWork <= 8) {
-                // Standard work hours - recommend normal sleep
-                if (sleepScheduleSelect.value !== 'custom') {
-                    sleepScheduleSelect.value = '49'; // 10:30pm-6am
-                    sleepInput.value = '49';
-                    updateSleepInsight(49);
-                }
-            } else if (dailyWork > 10) {
-                // Long work hours - might need to adjust sleep
-                if (sleepScheduleSelect.value !== 'custom') {
-                    sleepScheduleSelect.value = '42'; // 11pm-6am (shorter to fit schedule)
-                    sleepInput.value = '42';
-                    updateSleepInsight(42);
-                }
-            }
+        function updateWorkInsight(weeklyHours) {
+            const dailyAvg = (weeklyHours / 5).toFixed(1);
+            const schedule = analyzeWorkSchedule(dailyAvg);
+            workInsight.style.display = 'block';
+            workInsight.innerHTML = `💡 ${dailyAvg} hrs/day - ${schedule.type} (${schedule.range})`;
         }
         
         function updateSleepInsight(weeklyHours) {
-            if (weeklyHours === 0) {
-                sleepInsight.style.display = 'none';
-                return;
-            }
-            
             const dailyAvg = (weeklyHours / 7).toFixed(1);
             const sleepSchedule = analyzeSleepSchedule(dailyAvg);
-            
             sleepInsight.style.display = 'block';
-            sleepInsight.innerHTML = `💤 ${dailyAvg} hours/night (${sleepSchedule.pattern}) - ${sleepSchedule.studyWindow}`;
-        }
-        
-        function analyzeSleepSchedule(dailyHours) {
-            if (dailyHours <= 5) {
-                return { 
-                    pattern: '12am-5am or similar',
-                    bedtime: '12:00am',
-                    wakeup: '5:00am',
-                    studyWindow: 'Study 9pm-11:30pm, morning 5:30am-8am'
-                };
-            } else if (dailyHours <= 6) {
-                return { 
-                    pattern: '11:30pm-5:30am or 12am-6am',
-                    bedtime: '11:30pm',
-                    wakeup: '5:30am',
-                    studyWindow: 'Study 9pm-11pm, morning 6am-8am'
-                };
-            } else if (dailyHours <= 7) {
-                return { 
-                    pattern: '11pm-6am',
-                    bedtime: '11:00pm',
-                    wakeup: '6:00am',
-                    studyWindow: 'Study 9pm-10:30pm, morning 6:30am-8am'
-                };
-            } else if (dailyHours <= 8) {
-                return { 
-                    pattern: '10:30pm-6:30am or 10pm-6am',
-                    bedtime: '10:30pm',
-                    wakeup: '6:30am',
-                    studyWindow: 'Study 8:30pm-10pm, morning 7am-8:30am'
-                };
-            } else {
-                return { 
-                    pattern: '10pm-6am or 9:30pm-6am',
-                    bedtime: '10:00pm',
-                    wakeup: '6:00am',
-                    studyWindow: 'Limited evening study, focus on weekends'
-                };
-            }
-        }
-        
-        function updateWorkInsight(weeklyHours) {
-            if (weeklyHours === 0) {
-                workInsight.style.display = 'none';
-                return;
-            }
-            
-            const dailyAvg = (weeklyHours / 5).toFixed(1);
-            const schedule = analyzeWorkSchedule(dailyAvg);
-            
-            workInsight.style.display = 'block';
-            workInsight.innerHTML = `💡 ${dailyAvg} hours/day suggests a ${schedule.type} schedule (${schedule.range})`;
+            sleepInsight.innerHTML = `💤 ${dailyAvg} hrs/night (${sleepSchedule.pattern})`;
         }
         
         function analyzeWorkSchedule(dailyHours) {
-            if (dailyHours <= 4) {
-                return { type: 'part-time', range: '9am-1pm or flexible', morningStudy: true, eveningStudy: true };
-            } else if (dailyHours <= 6) {
-                return { type: 'reduced hours', range: '9am-3pm', morningStudy: false, eveningStudy: true };
-            } else if (dailyHours <= 8) {
-                return { type: 'standard', range: '9am-5pm', morningStudy: false, eveningStudy: true };
-            } else if (dailyHours <= 10) {
-                return { type: 'extended', range: '8am-6pm or 7am-5pm', morningStudy: false, eveningStudy: true };
-            } else if (dailyHours <= 12) {
-                return { type: 'long hours', range: '7am-7pm', morningStudy: false, eveningStudy: false };
-            } else {
-                return { type: 'very demanding', range: '12+ hours/day', morningStudy: false, eveningStudy: false };
-            }
+            if (dailyHours <= 4) return { type: 'part-time', range: '9am-1pm', morningStudy: true, eveningStudy: true };
+            if (dailyHours <= 6) return { type: 'reduced', range: '9am-3pm', morningStudy: false, eveningStudy: true };
+            if (dailyHours <= 8) return { type: 'standard', range: '9am-5pm', morningStudy: false, eveningStudy: true };
+            if (dailyHours <= 10) return { type: 'extended', range: '8am-6pm', morningStudy: false, eveningStudy: true };
+            return { type: 'long hours', range: '7am-7pm', morningStudy: false, eveningStudy: false };
         }
         
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            calculateAndDisplay();
-        });
+        function analyzeSleepSchedule(dailyHours) {
+            if (dailyHours <= 5) return { pattern: '12am-5am', bedtime: '12:00am', wakeup: '5:00am' };
+            if (dailyHours <= 6) return { pattern: '11:30pm-5:30am', bedtime: '11:30pm', wakeup: '5:30am' };
+            if (dailyHours <= 7) return { pattern: '11pm-6am', bedtime: '11:00pm', wakeup: '6:00am' };
+            if (dailyHours <= 8) return { pattern: '10:30pm-6:30am', bedtime: '10:30pm', wakeup: '6:30am' };
+            return { pattern: '10pm-6am', bedtime: '10:00pm', wakeup: '6:00am' };
+        }
         
-        function calculateAndDisplay() {
-            const work = parseFloat(document.getElementById('work').value) || 0;
-            const sleep = parseFloat(document.getElementById('sleep').value) || 0;
-            const meals = parseFloat(document.getElementById('meals').value) || 0;
-            const family = parseFloat(document.getElementById('family').value) || 0;
-            const social = parseFloat(document.getElementById('social').value) || 0;
-            const other = parseFloat(document.getElementById('other').value) || 0;
+        document.getElementById('calculatorForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const work = parseFloat(workInput.value);
+            const sleep = parseFloat(sleepInput.value);
+            const meals = parseFloat(document.getElementById('meals').value);
+            const family = parseFloat(document.getElementById('family').value);
+            const social = parseFloat(document.getElementById('social').value);
+            const other = parseFloat(document.getElementById('other').value);
             
             const totalCommitted = work + sleep + meals + family + social + other;
-            const totalHours = 168;
-            let available = totalHours - totalCommitted;
-            
+            let available = 168 - totalCommitted;
             if (available < 0) available = 0;
-            if (available > 168) available = 168;
             
             const perDay = (available / 7).toFixed(1);
             const perMonth = (available * 4.33).toFixed(0);
             const perYear = (available * 52).toFixed(0);
             
             const dailyWork = (work / 5).toFixed(1);
+            const dailySleep = (sleep / 7).toFixed(1);
             const workSchedule = analyzeWorkSchedule(dailyWork);
-            
-            currentData = {
-                work, sleep, meals, family, social, other, available,
-                perDay, perMonth, perYear, workSchedule, dailyWork
-            };
+            const sleepSchedule = analyzeSleepSchedule(dailySleep);
             
             document.getElementById('weeklyHours').textContent = available.toFixed(0) + 'h';
             document.getElementById('dailyHours').textContent = perDay + 'h';
             document.getElementById('monthlyHours').textContent = perMonth + 'h';
             document.getElementById('yearlyHours').textContent = perYear + 'h';
             
-            createScheduleInsight(workSchedule, dailyWork, perDay, available);
+            createScheduleInsight(workSchedule, sleepSchedule, dailyWork, dailySleep);
             createCharts(work, sleep, meals, family, social, other, available);
             generateRecommendation(available, perYear, workSchedule);
             
-            resultsDiv.classList.add('show');
+            document.getElementById('results').classList.add('show');
             setTimeout(() => {
-                resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
             }, 100);
-        }
+        });
         
-        function createScheduleInsight(schedule, dailyWork, dailyStudy, weeklyStudy) {
-            const insightBox = document.getElementById('scheduleInsightBox');
+        function createScheduleInsight(workSchedule, sleepSchedule, dailyWork, dailySleep) {
+            const workEndHour = dailyWork <= 8 ? 17 : (dailyWork <= 10 ? 18 : 19);
             
-            // Get sleep info
-            const sleepHours = parseFloat(sleepInput.value) || 49;
-            const dailySleep = sleepHours / 7;
-            const sleepSchedule = analyzeSleepSchedule(dailySleep);
-            
-            // Calculate specific study windows based on work and sleep
-            const studyWindows = calculateStudyWindows(schedule, sleepSchedule, dailyWork);
-            
-            // Calculate realistic buffer time
-            let bufferInfo = '';
-            if (schedule.eveningStudy) {
-                if (dailyWork <= 4) {
-                    bufferInfo = ' (allowing 1.5 hours for commute, dinner, and settling in)';
-                } else if (dailyWork <= 8) {
-                    bufferInfo = ' (allowing 2+ hours for commute, dinner, and decompression)';
-                } else if (dailyWork <= 10) {
-                    bufferInfo = ' (allowing 2.5 hours for commute, dinner, and rest - you need it!)';
-                } else {
-                    bufferInfo = ' (allowing 2.75 hours for long commute, dinner, and recovery)';
-                }
-            }
-            
-            let studyTimeOptions = '';
-            if (schedule.morningStudy && schedule.eveningStudy) {
-                studyTimeOptions = `You have flexibility for <strong>morning (${studyWindows.morning})</strong> and <strong>evening (${studyWindows.evening})</strong> study sessions${bufferInfo}.`;
-            } else if (schedule.eveningStudy) {
-                studyTimeOptions = `Your best study window is <strong>evenings (${studyWindows.evening || 'limited'})</strong>${bufferInfo}, plus <strong>weekends</strong> for extended sessions.`;
+            let buffer, bufferDesc;
+            if (dailyWork <= 4) {
+                buffer = 1.5;
+                bufferDesc = '1.5 hours for commute, dinner, settling';
+            } else if (dailyWork <= 8) {
+                buffer = 2.25;
+                bufferDesc = '2+ hours (commute 45min + dinner 60min + rest 15min)';
+            } else if (dailyWork <= 10) {
+                buffer = 2.5;
+                bufferDesc = '2.5 hours (commute 60min + dinner 60min + rest 20min)';
             } else {
-                studyTimeOptions = `With long work hours and sleep by ${sleepSchedule.bedtime}, focus on <strong>weekend-intensive learning</strong>. Weekday evenings offer minimal quality study time after commute and recovery.`;
+                buffer = 2.75;
+                bufferDesc = '2.75 hours (long commute + dinner + recovery)';
             }
             
-            const lunchBreak = dailyWork >= 7 ? `<div class="time-slot"><div class="time-slot-label">Lunch Break</div><div class="time-slot-value">30-45 min</div></div>` : '';
+            const studyStartHour = workEndHour + buffer;
+            const bedHour = parseInt(sleepSchedule.bedtime.split(':')[0]);
+            const actualBedHour = sleepSchedule.bedtime.includes('pm') && bedHour !== 12 ? bedHour + 12 : (bedHour === 12 && sleepSchedule.bedtime.includes('am') ? 0 : bedHour);
+            const studyEndHour = actualBedHour - 1;
             
-            insightBox.innerHTML = `
-                <div class="schedule-insight-title">
-                    ⏰ Your Personalized Study Schedule
-                </div>
+            const formatTime = (h) => {
+                const hour24 = Math.floor(h);
+                const minutes = Math.round((h % 1) * 60);
+                const period = hour24 >= 12 ? 'pm' : 'am';
+                let displayHour = hour24 > 12 ? hour24 - 12 : hour24;
+                if (displayHour === 0) displayHour = 12;
+                return `${displayHour}:${minutes.toString().padStart(2, '0')}${period}`;
+            };
+            
+            const eveningAvailable = studyEndHour - studyStartHour;
+            let eveningSlot = '';
+            let studyTimeDesc = '';
+            
+            if (workSchedule.eveningStudy && eveningAvailable >= 1) {
+                eveningSlot = `<div class="time-slot"><div class="time-slot-label">Evening Study</div><div class="time-slot-value">${formatTime(studyStartHour)}-${formatTime(studyEndHour)}</div></div>`;
+                studyTimeDesc = `Best study window: <strong>evenings (${formatTime(studyStartHour)}-${formatTime(studyEndHour)})</strong>, allowing ${bufferDesc}`;
+            } else if (workSchedule.eveningStudy) {
+                eveningSlot = `<div class="time-slot" style="opacity: 0.6;"><div class="time-slot-label">Evening Study</div><div class="time-slot-value">Limited</div></div>`;
+                studyTimeDesc = `Very limited evening time. <strong>Focus on weekend-intensive learning</strong>`;
+            } else {
+                studyTimeDesc = `With your demanding schedule, <strong>weekend-focused learning</strong> works best`;
+            }
+            
+            const morningSlot = workSchedule.morningStudy ? `<div class="time-slot"><div class="time-slot-label">Morning Study</div><div class="time-slot-value">6:30am-8:30am</div></div>` : '';
+            const lunchSlot = dailyWork >= 7 ? `<div class="time-slot"><div class="time-slot-label">Lunch Break</div><div class="time-slot-value">30-45 min</div></div>` : '';
+            
+            let proTip = eveningAvailable >= 2 ? 
+                `You have ${eveningAvailable.toFixed(1)} hours each evening - use first hour for lighter study` :
+                eveningAvailable >= 1 ?
+                `Only ${eveningAvailable.toFixed(1)} hours on weekday evenings - plan 3-4 hour weekend blocks` :
+                `Weekend 3-4 hour blocks (Sat/Sun 9am-1pm) will be most productive`;
+            
+            document.getElementById('scheduleInsightBox').innerHTML = `
+                <div class="schedule-insight-title">⏰ Your Realistic Study Schedule</div>
                 <div class="schedule-insight-content">
-                    <p><strong>Work:</strong> ${dailyWork} hrs/day (${schedule.type}, ${schedule.range}) | <strong>Sleep:</strong> ${dailySleep.toFixed(1)} hrs/night (${sleepSchedule.bedtime} - ${sleepSchedule.wakeup})</p>
-                    <p style="margin-top: 12px;">${studyTimeOptions}</p>
+                    <p><strong>Work:</strong> ${dailyWork} hrs/day (${workSchedule.type}, ${workSchedule.range}) | <strong>Sleep:</strong> ${dailySleep} hrs/night (${sleepSchedule.bedtime} - ${sleepSchedule.wakeup})</p>
+                    <p style="margin-top: 12px;">${studyTimeDesc}</p>
                     <div class="time-slots">
-                        ${studyWindows.morningSlot}
-                        ${lunchBreak}
-                        ${studyWindows.eveningSlot}
-                        <div class="time-slot"><div class="time-slot-label">Weekend Study</div><div class="time-slot-value">Flexible blocks</div></div>
+                        ${morningSlot}
+                        ${lunchSlot}
+                        ${eveningSlot}
+                        <div class="time-slot"><div class="time-slot-label">Weekend Study</div><div class="time-slot-value">Flexible</div></div>
                     </div>
-                    <p style="margin-top: 16px; font-size: 14px;"><strong>💡 Pro Tip:</strong> ${studyWindows.tip}</p>
+                    <p style="margin-top: 16px; font-size: 14px;"><strong>💡 Pro Tip:</strong> ${proTip}</p>
                 </div>
             `;
-        }
-        
-        function calculateStudyWindows(workSchedule, sleepSchedule, dailyWork) {
-            let morning = '';
-            let evening = '';
-            let morningSlot = '';
-            let eveningSlot = '';
-            let tip = '';
-            
-            // Parse wake up and bedtime
-            const wakeHour = parseInt(sleepSchedule.wakeup.split(':')[0]) || 6;
-            const bedtimeStr = sleepSchedule.bedtime;
-            let bedHour = parseInt(bedtimeStr.split(':')[0]);
-            
-            // Handle 12am as midnight (0) and pm times properly
-            if (bedtimeStr.includes('am') && bedHour === 12) {
-                bedHour = 0;
-            } else if (bedtimeStr.includes('pm') && bedHour !== 12) {
-                bedHour += 12;
-            } else if (bedtimeStr.includes('am') && bedHour < 6) {
-                bedHour += 24; // Next day midnight-6am becomes 24-30
-            }
-            
-            const bedMinutes = sleepSchedule.bedtime.includes(':30') ? 30 : 0;
-            
-            // Calculate morning study window
-            if (workSchedule.morningStudy) {
-                const studyStartHour = wakeHour;
-                const studyEndHour = dailyWork <= 4 ? 8 : (dailyWork <= 6 ? 8.5 : 8);
-                morning = `${studyStartHour}:30am-${Math.floor(studyEndHour)}:${studyEndHour % 1 === 0.5 ? '30' : '00'}am`;
-                morningSlot = `<div class="time-slot"><div class="time-slot-label">Morning Study</div><div class="time-slot-value">${morning}</div></div>`;
-            }
-            
-            // Calculate evening study window with REALISTIC buffers
-            if (workSchedule.eveningStudy) {
-                const workEndHour = dailyWork <= 8 ? 17 : (dailyWork <= 10 ? 18 : 19);
-                
-                // Realistic buffer calculation
-                // Includes: commute + decompress + dinner + cleanup
-                let buffer;
-                if (dailyWork <= 4) {
-                    buffer = 1.5; // 30min commute + 10min decompress + 60min dinner + 15min cleanup = ~1.5hrs
-                } else if (dailyWork <= 8) {
-                    buffer = 2.25; // 45min commute + 15min decompress + 60min dinner + 15min cleanup = ~2.25hrs
-                } else if (dailyWork <= 10) {
-                    buffer = 2.5; // 60min commute + 20min decompress + 60min dinner + 15min cleanup = ~2.5hrs
-                } else {
-                    buffer = 2.75; // 60min commute + 30min decompress + 60min dinner + 15min cleanup = ~2.75hrs (exhausted)
-                }
-                
-                const studyStartHour = workEndHour + buffer;
-                
-                // Study until 1 hour before bedtime
-                const studyEndHour = bedHour - (bedMinutes === 30 ? 0.5 : 1);
-                
-                const formatHour = (h) => {
-                    const hour24 = Math.floor(h);
-                    const minutes = Math.round((h % 1) * 60);
-                    const period = hour24 >= 12 ? 'pm' : 'am';
-                    let displayHour = hour24 > 12 ? hour24 - 12 : hour24;
-                    if (displayHour === 0) displayHour = 12;
-                    const minuteStr = minutes > 0 ? `:${minutes.toString().padStart(2, '0')}` : '';
-                    return `${displayHour}${minuteStr}${period}`;
-                };
-                
-                // Check if there's actually time available
-                const availableEvening = studyEndHour - studyStartHour;
-                
-                if (availableEvening >= 1) {
-                    evening = `${formatHour(studyStartHour)}-${formatHour(studyEndHour)}`;
-                    eveningSlot = `<div class="time-slot"><div class="time-slot-label">Evening Study</div><div class="time-slot-value">${evening}</div></div>`;
-                } else {
-                    // Not enough time in evening
-                    eveningSlot = `<div class="time-slot" style="opacity: 0.6;"><div class="time-slot-label">Evening Study</div><div class="time-slot-value">Limited time</div></div>`;
-                }
-            }
-            
-            // Generate personalized tip with realistic buffer info
-            if (workSchedule.morningStudy && workSchedule.eveningStudy) {
-                tip = `Split your study time: mornings for reading/lectures, evenings for practice. Allow 1.5-2 hours after work for commute, dinner, and rest before studying.`;
-            } else if (workSchedule.eveningStudy) {
-                const bufferHours = dailyWork <= 8 ? '2-2.5' : '2.5-3';
-                tip = `Realistic evening study starts ${bufferHours} hours after work ends (commute + dinner + decompression). Use weekends for deep focus work requiring 3+ hour blocks.`;
-            } else {
-                tip = `With your demanding schedule and long commute, weekend 3-4 hour blocks will be most productive. Consider 9am-1pm Saturday and Sunday mornings when you're fresh.`;
-            }
-            
-            return { morning, evening, morningSlot, eveningSlot, tip };
         }
         
         function createCharts(work, sleep, meals, family, social, other, available) {
@@ -1110,18 +571,10 @@
             pieChart = new Chart(pieCtx, {
                 type: 'doughnut',
                 data: {
-                    labels: ['Work', 'Sleep', 'Meals', 'Family', 'Social & Leisure', 'Other', 'Study Time'],
+                    labels: ['Work', 'Sleep', 'Meals', 'Family', 'Social', 'Other', 'Study'],
                     datasets: [{
                         data: [work, sleep, meals, family, social, other, available],
-                        backgroundColor: [
-                            '#e52d27',
-                            '#6c757d',
-                            '#fd7e14',
-                            '#ff6b6b',
-                            '#ffc107',
-                            '#96ceb4',
-                            '#28a745'
-                        ],
+                        backgroundColor: ['#e52d27', '#6c757d', '#fd7e14', '#ff6b6b', '#ffc107', '#96ceb4', '#28a745'],
                         borderWidth: 0
                     }]
                 },
@@ -1131,221 +584,94 @@
                     plugins: {
                         legend: {
                             position: 'bottom',
-                            labels: {
-                                padding: 10,
-                                font: { size: 10, weight: '600' },
-                                boxWidth: 12
-                            }
+                            labels: { padding: 10, font: { size: 10, weight: '600' }, boxWidth: 12 }
                         }
                     }
                 }
             });
             
             const totalCommitted = work + sleep + meals + family + social + other;
-            
             barChart = new Chart(barCtx, {
                 type: 'bar',
                 data: {
                     labels: ['Available', 'Committed'],
                     datasets: [{
-                        label: 'Hours per Week',
+                        label: 'Hours/Week',
                         data: [available, totalCommitted],
-                        backgroundColor: [
-                            '#28a745',
-                            '#dc3545'
-                        ],
-                        borderRadius: 8,
-                        borderWidth: 0
+                        backgroundColor: ['#28a745', '#dc3545'],
+                        borderRadius: 8
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: false }
-                    },
+                    plugins: { legend: { display: false } },
                     scales: {
-                        y: {
-                            beginAtZero: true,
-                            max: 168,
-                            grid: { display: true, color: '#e9ecef' },
-                            ticks: { font: { weight: '600' } }
-                        },
-                        x: {
-                            grid: { display: false },
-                            ticks: { font: { weight: '600' } }
-                        }
+                        y: { beginAtZero: true, max: 168, grid: { color: '#e9ecef' } },
+                        x: { grid: { display: false } }
                     }
                 }
             });
         }
         
-        function createCalendar(perDay) {
-            // Calendar function removed as per request
-        }
-        
         function generateRecommendation(available, perYear, workSchedule) {
             let title = '';
             let text = '';
+            let suggestions = [];
             
             if (available >= 20) {
-                title = 'Excellent Capacity: Multiple Programme Options';
-                text = `<strong>You have exceptional study capacity.</strong> With ${available.toFixed(0)} hours weekly (${perYear} hours annually), you could pursue full-time programmes, intensive part-time Master's degrees, or multiple professional certificates simultaneously. ${workSchedule.morningStudy ? 'Your flexible work schedule allows for morning and evening study sessions.' : 'Focus on evening and weekend study blocks for optimal learning.'}`;
+                title = 'Excellent Capacity: Multiple Options';
+                text = `<strong>Exceptional study capacity.</strong> With ${available.toFixed(0)} hours weekly (${perYear} annually), you could pursue full-time programmes or intensive part-time degrees.`;
+                suggestions = [
+                    { name: "Full-Time Master's", details: "Complete in 1 year", commitment: "20-25 hrs/week", format: "Campus or blended" },
+                    { name: "Part-Time Master's + Certificate", details: "Dual credentials over 2 years", commitment: "15-20 hrs/week", format: "Evening/weekend" },
+                    { name: "Research Programme", details: "MPhil/PhD", commitment: "20+ hrs/week", format: "Independent research" }
+                ];
             } else if (available >= 12) {
-                title = 'Strong Capacity: Ideal for Part-Time Study';
-                text = `<strong>Your schedule is well-suited for part-time learning.</strong> ${available.toFixed(0)} hours per week (${perYear} hours annually) aligns perfectly with our part-time Master's programmes (2-3 year completion) and professional certificates. ${workSchedule.eveningStudy ? 'Evening classes and weekend sessions would work excellently with your ' + workSchedule.type + ' schedule (' + workSchedule.range + ').' : 'Weekend-intensive formats are recommended given your demanding work hours.'}`;
+                title = 'Strong Capacity: Part-Time Study';
+                text = `<strong>Well-suited for part-time learning.</strong> ${available.toFixed(0)} hours weekly (${perYear} annually) aligns with part-time Master's programmes. ${workSchedule.eveningStudy ? 'Evening classes work well.' : 'Weekend formats recommended.'}`;
+                suggestions = [
+                    { name: "Part-Time Master's", details: "2-3 years completion", commitment: "12-15 hrs/week", format: workSchedule.eveningStudy ? "Evening & online" : "Weekend & online" },
+                    { name: "Professional Certificates", details: "Stackable credentials", commitment: "10-12 hrs/week", format: "Self-paced online" },
+                    { name: "Postgraduate Diploma", details: "Professional qualification", commitment: "12-14 hrs/week", format: "Blended learning" }
+                ];
             } else if (available >= 7) {
-                title = 'Good Capacity: Flexible Learning Recommended';
-                text = `<strong>Your schedule supports flexible learning programmes.</strong> ${available.toFixed(0)} hours weekly equals ${perYear} hours annually. Consider executive education programmes designed for busy professionals, or modular formats that allow you to study ${workSchedule.eveningStudy ? 'in the evenings after your ' + workSchedule.type + ' workday' : 'primarily on weekends'}. Self-paced options give you maximum flexibility.`;
+                title = 'Good Capacity: Flexible Learning';
+                text = `<strong>Supports flexible programmes.</strong> ${available.toFixed(0)} hours weekly (${perYear} annually). Executive education works well ${workSchedule.eveningStudy ? 'with evening study' : 'with weekend focus'}.`;
+                suggestions = [
+                    { name: "Executive Education", details: "For working professionals", commitment: "7-10 hrs/week", format: workSchedule.eveningStudy ? "Evening & weekend" : "Weekend intensive" },
+                    { name: "Micro-Credentials", details: "8-12 week programmes", commitment: "6-8 hrs/week", format: "Flexible online" },
+                    { name: "Professional Development", details: "Industry skills", commitment: "7-9 hrs/week", format: "Self-paced" }
+                ];
             } else if (available >= 3) {
-                title = 'Moderate Capacity: Micro-Learning Approach';
-                text = `<strong>Your schedule is ideal for micro-learning.</strong> With ${available.toFixed(0)} hours weekly (${perYear} hours annually), short professional certificates (4-8 weeks) and micro-credentials work exceptionally well. ${workSchedule.type === 'long hours' || workSchedule.type === 'very demanding' ? 'Given your demanding work schedule, fully asynchronous online formats will provide the flexibility you need.' : 'Focus on bite-sized learning modules that fit into your available time slots.'}`;
+                title = 'Moderate Capacity: Micro-Learning';
+                text = `<strong>Ideal for micro-learning.</strong> ${available.toFixed(0)} hours weekly (${perYear} annually). Short certificates fit your demanding schedule.`;
+                suggestions = [
+                    { name: "Short Courses", details: "4-8 week programmes", commitment: "3-5 hrs/week", format: "Fully online" },
+                    { name: "Modular Learning", details: "One module at a time", commitment: "3-6 hrs/week", format: "Self-paced" }
+                ];
             } else {
-                title = 'Limited Capacity: Schedule Optimization Recommended';
-                text = `<strong>You currently have limited study time available.</strong> With ${available.toFixed(0)} hours per week, you might want to review your commitments. ${workSchedule.type === 'very demanding' ? 'Your work schedule is extremely demanding. Consider discussing flexible arrangements with your employer, or focus on ultra-short micro-learning modules (1-2 hours/week) until your schedule improves.' : 'Consider reducing leisure time or optimizing other activities to create more study opportunities.'}`;
+                title = 'Limited Capacity: Consider Adjustments';
+                text = `<strong>Currently limited study time.</strong> With ${available.toFixed(0)} hours weekly, consider adjusting your schedule or ultra-flexible micro-learning.`;
+                suggestions = [
+                    { name: "Micro-Modules", details: "2-4 week bite-sized learning", commitment: "1-2 hrs/week", format: "Mobile-friendly" },
+                    { name: "On-Demand Masterclasses", details: "Single-topic sessions", commitment: "1-3 hrs total", format: "Lifetime access" }
+                ];
             }
             
             document.getElementById('recommendationTitle').textContent = title;
             document.getElementById('recommendationText').innerHTML = text;
-            
-            const suggestions = generateProgrammeSuggestions(available, workSchedule);
-            const suggestionsDiv = document.getElementById('programmeSuggestions');
-            suggestionsDiv.innerHTML = suggestions.map(prog => `
+            document.getElementById('programmeSuggestions').innerHTML = suggestions.map(s => `
                 <div class="programme-card">
-                    <div class="programme-name">${prog.name}</div>
+                    <div class="programme-name">${s.name}</div>
                     <div class="programme-details">
-                        ${prog.details}<br>
-                        <strong>Time:</strong> ${prog.commitment}<br>
-                        <strong>Format:</strong> ${prog.format}
+                        ${s.details}<br>
+                        <strong>Time:</strong> ${s.commitment}<br>
+                        <strong>Format:</strong> ${s.format}
                     </div>
                 </div>
             `).join('');
         }
-        
-        function generateProgrammeSuggestions(available, workSchedule) {
-            const suggestions = [];
-            
-            if (available >= 20) {
-                suggestions.push({
-                    name: 'Full-Time Master\'s Programme',
-                    details: 'Complete in 1 year with intensive study',
-                    commitment: '20-25 hrs/week',
-                    format: 'Campus-based or blended'
-                });
-                suggestions.push({
-                    name: 'Part-Time Master\'s + Certificate',
-                    details: 'Dual credentials over 2 years',
-                    commitment: '15-20 hrs/week',
-                    format: 'Flexible evening/weekend'
-                });
-                suggestions.push({
-                    name: 'Research Programme (MPhil/PhD)',
-                    details: 'Advanced research degree',
-                    commitment: '20+ hrs/week',
-                    format: 'Independent research with supervision'
-                });
-            } else if (available >= 12) {
-                suggestions.push({
-                    name: 'Part-Time Master\'s Programme',
-                    details: 'Complete in 2-3 years at your own pace',
-                    commitment: '12-15 hrs/week',
-                    format: workSchedule.eveningStudy ? 'Evening classes & online' : 'Weekend & online'
-                });
-                suggestions.push({
-                    name: 'Professional Certificate Series',
-                    details: 'Stackable credentials in your field',
-                    commitment: '10-12 hrs/week',
-                    format: 'Fully online, self-paced modules'
-                });
-                suggestions.push({
-                    name: 'Postgraduate Diploma',
-                    details: 'Comprehensive professional qualification',
-                    commitment: '12-14 hrs/week',
-                    format: workSchedule.eveningStudy ? 'Blended: evening seminars & online' : 'Weekend workshops & online'
-                });
-            } else if (available >= 7) {
-                suggestions.push({
-                    name: 'Executive Education Programme',
-                    details: 'Designed for working professionals',
-                    commitment: '7-10 hrs/week',
-                    format: workSchedule.eveningStudy ? 'Evening sessions & weekend intensives' : 'Weekend intensives only'
-                });
-                suggestions.push({
-                    name: 'Micro-Credentials',
-                    details: '8-12 week focused programmes',
-                    commitment: '6-8 hrs/week',
-                    format: 'Online with flexible deadlines'
-                });
-                suggestions.push({
-                    name: 'Professional Development Pathway',
-                    details: 'Industry-specific skills development',
-                    commitment: '7-9 hrs/week',
-                    format: 'Self-paced online with live Q&A sessions'
-                });
-            } else if (available >= 3) {
-                suggestions.push({
-                    name: 'Short Courses & Certificates',
-                    details: '4-8 week professional development',
-                    commitment: '3-5 hrs/week',
-                    format: 'Fully asynchronous online'
-                });
-                suggestions.push({
-                    name: 'Modular Learning Pathway',
-                    details: 'Build skills one module at a time',
-                    commitment: '3-6 hrs/week per module',
-                    format: 'Self-paced with mentor support'
-                });
-            } else {
-                suggestions.push({
-                    name: 'Micro-Learning Modules',
-                    details: 'Bite-sized professional skills (2-4 weeks)',
-                    commitment: '1-2 hrs/week',
-                    format: 'Mobile-friendly, ultra-flexible'
-                });
-                suggestions.push({
-                    name: 'On-Demand Masterclasses',
-                    details: 'Single-topic expert sessions',
-                    commitment: '1-3 hrs total per class',
-                    format: 'Watch anytime, lifetime access'
-                });
-            }
-            
-            return suggestions;
-        }
-        
-        document.getElementById('emailBtn').addEventListener('click', function() {
-            emailModal.classList.add('show');
-        });
-        
-        document.getElementById('closeModal').addEventListener('click', function() {
-            emailModal.classList.remove('show');
-        });
-        
-        document.getElementById('sendEmail').addEventListener('click', function() {
-            const name = document.getElementById('userName').value;
-            const email = document.getElementById('userEmail').value;
-            
-            if (!name || !email) {
-                alert('Please enter both your name and email address.');
-                return;
-            }
-            
-            alert('Thank you, ' + name + '! Your personalised study plan will be sent to ' + email + ' shortly. We\'ll also include information about relevant programmes at King\'s College London.');
-            
-            emailModal.classList.remove('show');
-            document.getElementById('userName').value = '';
-            document.getElementById('userEmail').value = '';
-        });
-        
-        document.getElementById('downloadBtn').addEventListener('click', function() {
-            window.print();
-        });
-        
-        emailModal.addEventListener('click', function(e) {
-            if (e.target === emailModal) {
-                emailModal.classList.remove('show');
-            }
-        });
     </script>
 </body>
 </html>
