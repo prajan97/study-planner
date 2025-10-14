@@ -491,31 +491,79 @@
         });
         
         function createScheduleInsight(workSchedule, sleepSchedule, dailyWork, dailySleep) {
-            const workEndHour = dailyWork <= 8 ? 17 : (dailyWork <= 10 ? 18 : 19);
+            // FIX 1: Calculate actual work end time for ANY hours (including 12+)
+            let workEndHour;
+            if (dailyWork <= 4) {
+                workEndHour = 13; // 9am + 4hrs = 1pm
+            } else if (dailyWork <= 6) {
+                workEndHour = 15; // 9am + 6hrs = 3pm
+            } else if (dailyWork <= 8) {
+                workEndHour = 17; // 9am + 8hrs = 5pm
+            } else if (dailyWork <= 10) {
+                workEndHour = 18; // 8am + 10hrs = 6pm
+            } else if (dailyWork <= 12) {
+                workEndHour = 19; // 7am + 12hrs = 7pm
+            } else {
+                // FIX 2: Handle very long work days (12+ hours)
+                workEndHour = 19 + (dailyWork - 12); // 7am + 14hrs = 9pm, etc.
+            }
             
+            // Adjust buffer based on work hours
             let buffer, bufferDesc;
             if (dailyWork <= 4) {
                 buffer = 1.5;
-                bufferDesc = '1.5 hours for commute, dinner, settling';
+                bufferDesc = '1.5 hours (short commute 30min + lunch 45min + settling 15min)';
+            } else if (dailyWork <= 6) {
+                buffer = 1.75;
+                bufferDesc = '1.75 hours (commute 40min + early dinner 60min + settling 15min)';
             } else if (dailyWork <= 8) {
                 buffer = 2.25;
-                bufferDesc = '2+ hours (commute 45min + dinner 60min + rest 15min)';
+                bufferDesc = '2+ hours (commute 45min + dinner 60min + decompression 15min)';
             } else if (dailyWork <= 10) {
                 buffer = 2.5;
-                bufferDesc = '2.5 hours (commute 60min + dinner 60min + rest 20min)';
+                bufferDesc = '2.5 hours (longer commute 60min + dinner 60min + rest 20min)';
             } else {
                 buffer = 2.75;
                 bufferDesc = '2.75 hours (long commute + dinner + recovery)';
             }
             
             const studyStartHour = workEndHour + buffer;
-            const bedHour = parseInt(sleepSchedule.bedtime.split(':')[0]);
-            const actualBedHour = sleepSchedule.bedtime.includes('pm') && bedHour !== 12 ? bedHour + 12 : (bedHour === 12 && sleepSchedule.bedtime.includes('am') ? 0 : bedHour);
+            
+            // FIX 3: Properly parse bedtime including midnight and half-hours
+            const bedtimeStr = sleepSchedule.bedtime;
+            const bedHourRaw = parseInt(bedtimeStr.split(':')[0]);
+            const bedMinutes = bedtimeStr.includes(':30') ? 0.5 : 0;
+            
+            let actualBedHour;
+            if (bedtimeStr.includes('am')) {
+                if (bedHourRaw === 12) {
+                    // 12:00am = midnight = 24 (next day for calculation)
+                    actualBedHour = 24;
+                } else {
+                    // 1am-11am (shouldn't happen for bedtime, but handle it)
+                    actualBedHour = bedHourRaw + 24; // Next day
+                }
+            } else { // pm
+                if (bedHourRaw === 12) {
+                    actualBedHour = 12; // Noon (shouldn't happen for bedtime)
+                } else {
+                    actualBedHour = bedHourRaw + 12; // 9pm = 21, 10pm = 22, 11pm = 23
+                }
+            }
+            
+            // FIX 4: Factor in half-hour bedtimes
+            actualBedHour += bedMinutes;
+            
+            // Study ends 1 hour before bedtime for wind-down
             const studyEndHour = actualBedHour - 1;
             
             const formatTime = (h) => {
-                const hour24 = Math.floor(h);
+                let hour24 = Math.floor(h);
                 const minutes = Math.round((h % 1) * 60);
+                
+                // Handle next-day hours (24+)
+                if (hour24 >= 24) hour24 -= 24;
+                
                 const period = hour24 >= 12 ? 'pm' : 'am';
                 let displayHour = hour24 > 12 ? hour24 - 12 : hour24;
                 if (displayHour === 0) displayHour = 12;
@@ -526,9 +574,18 @@
             let eveningSlot = '';
             let studyTimeDesc = '';
             
-            if (workSchedule.eveningStudy && eveningAvailable >= 1) {
+            // FIX 5: Handle negative/zero study time gracefully
+            if (eveningAvailable < 0) {
+                eveningSlot = `<div class="time-slot" style="opacity: 0.4; background: #ffebee;"><div class="time-slot-label">Evening Study</div><div class="time-slot-value">Not possible</div></div>`;
+                studyTimeDesc = `<strong>⚠️ Your work hours make evening study impossible.</strong> After ${dailyWork} hrs work + commute/dinner/rest, it's already past your bedtime. <strong>Weekend-only study</strong> is essential.`;
+            } else if (eveningAvailable < 0.5) {
+                eveningSlot = `<div class="time-slot" style="opacity: 0.6;"><div class="time-slot-label">Evening Study</div><div class="time-slot-value">< 30 min</div></div>`;
+                studyTimeDesc = `Minimal evening time (under 30 minutes). <strong>Focus entirely on weekend study blocks.</strong>`;
+            } else if (workSchedule.eveningStudy && eveningAvailable >= 1) {
+                // FIX 6: Warn about very late study starts
+                const warningText = studyStartHour >= 22 ? ' ⚠️ Very late start - consider weekend focus instead' : '';
                 eveningSlot = `<div class="time-slot"><div class="time-slot-label">Evening Study</div><div class="time-slot-value">${formatTime(studyStartHour)}-${formatTime(studyEndHour)}</div></div>`;
-                studyTimeDesc = `Best study window: <strong>evenings (${formatTime(studyStartHour)}-${formatTime(studyEndHour)})</strong>, allowing ${bufferDesc}`;
+                studyTimeDesc = `Best study window: <strong>evenings (${formatTime(studyStartHour)}-${formatTime(studyEndHour)})</strong>, allowing ${bufferDesc}${warningText}`;
             } else if (workSchedule.eveningStudy) {
                 eveningSlot = `<div class="time-slot" style="opacity: 0.6;"><div class="time-slot-label">Evening Study</div><div class="time-slot-value">Limited</div></div>`;
                 studyTimeDesc = `Very limited evening time. <strong>Focus on weekend-intensive learning</strong>`;
@@ -536,14 +593,30 @@
                 studyTimeDesc = `With your demanding schedule, <strong>weekend-focused learning</strong> works best`;
             }
             
-            const morningSlot = workSchedule.morningStudy ? `<div class="time-slot"><div class="time-slot-label">Morning Study</div><div class="time-slot-value">6:30am-8:30am</div></div>` : '';
-            const lunchSlot = dailyWork >= 7 ? `<div class="time-slot"><div class="time-slot-label">Lunch Break</div><div class="time-slot-value">30-45 min</div></div>` : '';
+            // FIX 7: Use actual wake-up time for morning study slot
+            const wakeTime = sleepSchedule.wakeup;
+            const wakeHour = parseInt(wakeTime.split(':')[0]);
+            const wakeMinutes = wakeTime.includes(':30') ? ':30' : ':00';
+            const morningStudyStart = `${wakeHour}${wakeMinutes}${wakeTime.includes('am') ? 'am' : 'pm'}`;
             
-            let proTip = eveningAvailable >= 2 ? 
-                `You have ${eveningAvailable.toFixed(1)} hours each evening - use first hour for lighter study` :
-                eveningAvailable >= 1 ?
-                `Only ${eveningAvailable.toFixed(1)} hours on weekday evenings - plan 3-4 hour weekend blocks` :
-                `Weekend 3-4 hour blocks (Sat/Sun 9am-1pm) will be most productive`;
+            const morningSlot = workSchedule.morningStudy ? 
+                `<div class="time-slot"><div class="time-slot-label">Morning Study</div><div class="time-slot-value">${morningStudyStart}-8:30am</div></div>` : '';
+            
+            const lunchSlot = dailyWork >= 7 ? 
+                `<div class="time-slot"><div class="time-slot-label">Lunch Break</div><div class="time-slot-value">30-45 min</div></div>` : '';
+            
+            let proTip = '';
+            if (eveningAvailable < 0) {
+                proTip = `Your schedule requires weekend-only study. Plan Saturday & Sunday 9am-5pm blocks (16 hours/weekend).`;
+            } else if (eveningAvailable >= 3) {
+                proTip = `You have ${eveningAvailable.toFixed(1)} hours each evening - excellent! Use 2 hours for deep study, 1 hour for review.`;
+            } else if (eveningAvailable >= 2) {
+                proTip = `You have ${eveningAvailable.toFixed(1)} hours each evening - use first hour for lighter study, save complex work for weekends.`;
+            } else if (eveningAvailable >= 1) {
+                proTip = `Only ${eveningAvailable.toFixed(1)} hours on weekday evenings - plan 3-4 hour weekend blocks for major assignments.`;
+            } else {
+                proTip = `Weekend 3-4 hour blocks (Sat/Sun 9am-1pm) will be most productive given your limited weekday time.`;
+            }
             
             document.getElementById('scheduleInsightBox').innerHTML = `
                 <div class="schedule-insight-title">⏰ Your Realistic Study Schedule</div>
@@ -554,7 +627,7 @@
                         ${morningSlot}
                         ${lunchSlot}
                         ${eveningSlot}
-                        <div class="time-slot"><div class="time-slot-label">Weekend Study</div><div class="time-slot-value">Flexible</div></div>
+                        <div class="time-slot"><div class="time-slot-label">Weekend Study</div><div class="time-slot-value">Flexible blocks</div></div>
                     </div>
                     <p style="margin-top: 16px; font-size: 14px;"><strong>💡 Pro Tip:</strong> ${proTip}</p>
                 </div>
