@@ -207,7 +207,7 @@
         .recommendation-text strong { color: #e52d27; font-weight: 600; }
         .programme-suggestions {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: repeat(3, 1fr);
             gap: 20px;
             margin-top: 20px;
         }
@@ -255,6 +255,7 @@
         @media (max-width: 768px) {
             .stats-showcase { grid-template-columns: repeat(2, 1fr); }
             .time-slots { grid-template-columns: 1fr; }
+            .programme-suggestions { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -268,7 +269,7 @@
         
         <div class="content">
             <div class="intro-text">
-                <p><strong>Get realistic study recommendations.</strong> Our smart system accounts for commute time, rest, and meal preparation to give you achievable study windows.</p>
+                <p><strong>Get realistic study recommendations.</strong> Our smart system accounts for commute time, rest, and your commitments to give you achievable study windows.</p>
             </div>
             
             <form id="calculatorForm">
@@ -593,7 +594,7 @@
                         <div class="time-slot"><div class="time-slot-label">Weekend Study</div><div class="time-slot-value">Flexible blocks</div></div>
                     </div>
                     <p style="margin-top: 16px; font-size: 14px;"><strong>💡 Pro Tip:</strong> ${proTip}</p>
-                </div>
+                    </div>
             `;
         }
         
@@ -641,17 +642,17 @@
                 title = 'Excellent Capacity for Part-Time Study';
                 text = `<strong>Ideal study capacity!</strong> With ${available.toFixed(0)} hours available weekly, you're in the optimal range for part-time online postgraduate programmes designed for working professionals.`;
                 suggestions = [
-                    { name: "Part-Time Online MSc", details: "Complete in 2-3 years", commitment: "12-15 hrs/week", format: "Flexible online learning" },
-                    { name: "Postgraduate Diploma", details: "Professional qualification", commitment: "10-12 hrs/week", format: "Online with optional campus days" },
-                    { name: "Postgraduate Certificate", details: "Focused credential in 9-12 months", commitment: "8-10 hrs/week", format: "Fully online" }
+                    { name: "Part-Time Online MSc", details: "2-6 years completion", commitment: "12-15 hrs/week", format: "Flexible online delivery" },
+                    { name: "Postgraduate Diploma", details: "18 months to 4 years", commitment: "10-12 hrs/week", format: "Flexible online delivery" },
+                    { name: "Postgraduate Certificate", details: "8 months to 2 years", commitment: "8-10 hrs/week", format: "Flexible online delivery" }
                 ];
             } else {
                 title = 'Good Capacity for Part-Time Study';
                 text = `<strong>Solid study capacity.</strong> ${available.toFixed(0)} hours available weekly works well for part-time online postgraduate programmes. ${workSchedule.eveningStudy ? 'Evening study windows work well.' : 'Weekend-focused study recommended.'}`;
                 suggestions = [
-                    { name: "Part-Time Online MSc", details: "2-3 years completion", commitment: "12-15 hrs/week", format: workSchedule.eveningStudy ? "Evening & weekend online" : "Weekend-intensive online" },
-                    { name: "Postgraduate Diploma", details: "Professional qualification", commitment: "10-12 hrs/week", format: "Flexible online delivery" },
-                    { name: "Postgraduate Certificate", details: "Stackable credential", commitment: "8-10 hrs/week", format: "Self-paced online" }
+                    { name: "Part-Time Online MSc", details: "2-6 years completion", commitment: "21-25 hrs/week", format: "Flexible online delivery" },
+                    { name: "Postgraduate Diploma", details: "18 months to 4 years", commitment: "21-25 hrs/week", format: "Flexible online delivery" },
+                    { name: "Postgraduate Certificate", details: "8 months to 2 years", commitment: "21-25 hrs/week", format: "Flexible online delivery" }
                 ];
             }
             
