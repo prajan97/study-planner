@@ -307,12 +307,6 @@
                     </div>
                     
                     <div class="input-group">
-                        <label>Meals & Food Prep (hours/week)</label>
-                        <input type="number" id="meals" min="0" max="168" value="14" required>
-                        <div class="helper-text">Cooking, eating, shopping</div>
-                    </div>
-                    
-                    <div class="input-group">
                         <label>Family Commitments (hours/week)</label>
                         <input type="number" id="family" min="0" max="168" value="20" required>
                         <div class="helper-text">Childcare, household duties</div>
@@ -445,12 +439,11 @@
             
             const work = parseFloat(workInput.value);
             const sleep = parseFloat(sleepInput.value);
-            const meals = parseFloat(document.getElementById('meals').value);
             const family = parseFloat(document.getElementById('family').value);
             const social = parseFloat(document.getElementById('social').value);
             const other = parseFloat(document.getElementById('other').value);
             
-            const totalCommitted = work + sleep + meals + family + social + other;
+            const totalCommitted = work + sleep + family + social + other;
             let available = 168 - totalCommitted;
             if (available < 0) available = 0;
             
@@ -467,7 +460,7 @@
             document.getElementById('monthlyHours').textContent = perMonth + 'h';
             
             createScheduleInsight(workSchedule, sleepSchedule, dailyWork, dailySleep);
-            createCharts(work, sleep, meals, family, social, other, available);
+            createCharts(work, sleep, family, social, other, available);
             generateRecommendation(available, workSchedule);
             
             document.getElementById('results').classList.add('show');
@@ -604,7 +597,7 @@
             `;
         }
         
-        function createCharts(work, sleep, meals, family, social, other, available) {
+        function createCharts(work, sleep, family, social, other, available) {
             const pieCtx = document.getElementById('pieChart').getContext('2d');
             
             if (pieChart) pieChart.destroy();
@@ -612,10 +605,10 @@
             pieChart = new Chart(pieCtx, {
                 type: 'doughnut',
                 data: {
-                    labels: ['Work', 'Sleep', 'Meals', 'Family', 'Social', 'Other', 'Study'],
+                    labels: ['Work', 'Sleep', 'Family', 'Social', 'Other', 'Study'],
                     datasets: [{
-                        data: [work, sleep, meals, family, social, other, available],
-                        backgroundColor: ['#e52d27', '#6c757d', '#fd7e14', '#ff6b6b', '#ffc107', '#96ceb4', '#28a745'],
+                        data: [work, sleep, family, social, other, available],
+                        backgroundColor: ['#e52d27', '#6c757d', '#ff6b6b', '#ffc107', '#96ceb4', '#28a745'],
                         borderWidth: 0
                     }]
                 },
