@@ -173,13 +173,15 @@
             text-transform: uppercase;
         }
         .time-slot-value { font-size: 20px; font-weight: 700; color: #856404; }
-        .visualization-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
+        .chart-container { 
+            background: #f8f9fa; 
+            padding: 30px; 
+            border-radius: 16px;
             margin-bottom: 40px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
         }
-        .chart-container { background: #f8f9fa; padding: 30px; border-radius: 16px; }
         .chart-title {
             font-size: 16px;
             font-weight: 700;
@@ -360,19 +362,10 @@
                 
                 <div id="scheduleInsightBox" class="schedule-insight-box"></div>
                 
-                <div class="visualization-grid">
-                    <div class="chart-container">
-                        <div class="chart-title">Weekly Time Allocation</div>
-                        <div class="chart-wrapper">
-                            <canvas id="pieChart"></canvas>
-                        </div>
-                    </div>
-                    
-                    <div class="chart-container">
-                        <div class="chart-title">Available vs Committed</div>
-                        <div class="chart-wrapper">
-                            <canvas id="barChart"></canvas>
-                        </div>
+                <div class="chart-container">
+                    <div class="chart-title">Weekly Time Allocation</div>
+                    <div class="chart-wrapper">
+                        <canvas id="pieChart"></canvas>
                     </div>
                 </div>
                 
@@ -391,7 +384,7 @@
     </div>
     
     <script>
-        let pieChart, barChart;
+        let pieChart;
         const workInput = document.getElementById('work');
         const workScheduleSelect = document.getElementById('workSchedule');
         const workInsight = document.getElementById('workInsight');
@@ -491,24 +484,21 @@
         });
         
         function createScheduleInsight(workSchedule, sleepSchedule, dailyWork, dailySleep) {
-            // FIX 1: Calculate actual work end time for ANY hours (including 12+)
             let workEndHour;
             if (dailyWork <= 4) {
-                workEndHour = 13; // 9am + 4hrs = 1pm
+                workEndHour = 13;
             } else if (dailyWork <= 6) {
-                workEndHour = 15; // 9am + 6hrs = 3pm
+                workEndHour = 15;
             } else if (dailyWork <= 8) {
-                workEndHour = 17; // 9am + 8hrs = 5pm
+                workEndHour = 17;
             } else if (dailyWork <= 10) {
-                workEndHour = 18; // 8am + 10hrs = 6pm
+                workEndHour = 18;
             } else if (dailyWork <= 12) {
-                workEndHour = 19; // 7am + 12hrs = 7pm
+                workEndHour = 19;
             } else {
-                // FIX 2: Handle very long work days (12+ hours)
-                workEndHour = 19 + (dailyWork - 12); // 7am + 14hrs = 9pm, etc.
+                workEndHour = 19 + (dailyWork - 12);
             }
             
-            // Adjust buffer based on work hours
             let buffer, bufferDesc;
             if (dailyWork <= 4) {
                 buffer = 1.5;
@@ -529,7 +519,6 @@
             
             const studyStartHour = workEndHour + buffer;
             
-            // FIX 3: Properly parse bedtime including midnight and half-hours
             const bedtimeStr = sleepSchedule.bedtime;
             const bedHourRaw = parseInt(bedtimeStr.split(':')[0]);
             const bedMinutes = bedtimeStr.includes(':30') ? 0.5 : 0;
@@ -537,31 +526,26 @@
             let actualBedHour;
             if (bedtimeStr.includes('am')) {
                 if (bedHourRaw === 12) {
-                    // 12:00am = midnight = 24 (next day for calculation)
                     actualBedHour = 24;
                 } else {
-                    // 1am-11am (shouldn't happen for bedtime, but handle it)
-                    actualBedHour = bedHourRaw + 24; // Next day
+                    actualBedHour = bedHourRaw + 24;
                 }
-            } else { // pm
+            } else {
                 if (bedHourRaw === 12) {
-                    actualBedHour = 12; // Noon (shouldn't happen for bedtime)
+                    actualBedHour = 12;
                 } else {
-                    actualBedHour = bedHourRaw + 12; // 9pm = 21, 10pm = 22, 11pm = 23
+                    actualBedHour = bedHourRaw + 12;
                 }
             }
             
-            // FIX 4: Factor in half-hour bedtimes
             actualBedHour += bedMinutes;
             
-            // Study ends 1 hour before bedtime for wind-down
             const studyEndHour = actualBedHour - 1;
             
             const formatTime = (h) => {
                 let hour24 = Math.floor(h);
                 const minutes = Math.round((h % 1) * 60);
                 
-                // Handle next-day hours (24+)
                 if (hour24 >= 24) hour24 -= 24;
                 
                 const period = hour24 >= 12 ? 'pm' : 'am';
@@ -574,7 +558,6 @@
             let eveningSlot = '';
             let studyTimeDesc = '';
             
-            // FIX 5: Handle negative/zero study time gracefully
             if (eveningAvailable < 0) {
                 eveningSlot = `<div class="time-slot" style="opacity: 0.4; background: #ffebee;"><div class="time-slot-label">Evening Study</div><div class="time-slot-value">Not possible</div></div>`;
                 studyTimeDesc = `<strong>⚠️ Your work hours make evening study impossible.</strong> After ${dailyWork} hrs work + commute/dinner/rest, it's already past your bedtime. <strong>Weekend-only study</strong> is essential.`;
@@ -582,7 +565,6 @@
                 eveningSlot = `<div class="time-slot" style="opacity: 0.6;"><div class="time-slot-label">Evening Study</div><div class="time-slot-value">< 30 min</div></div>`;
                 studyTimeDesc = `Minimal evening time (under 30 minutes). <strong>Focus entirely on weekend study blocks.</strong>`;
             } else if (workSchedule.eveningStudy && eveningAvailable >= 1) {
-                // FIX 6: Warn about very late study starts
                 const warningText = studyStartHour >= 22 ? ' ⚠️ Very late start - consider weekend focus instead' : '';
                 eveningSlot = `<div class="time-slot"><div class="time-slot-label">Evening Study</div><div class="time-slot-value">${formatTime(studyStartHour)}-${formatTime(studyEndHour)}</div></div>`;
                 studyTimeDesc = `Best study window: <strong>evenings (${formatTime(studyStartHour)}-${formatTime(studyEndHour)})</strong>, allowing ${bufferDesc}${warningText}`;
@@ -593,7 +575,6 @@
                 studyTimeDesc = `With your demanding schedule, <strong>weekend-focused learning</strong> works best`;
             }
             
-            // FIX 7: Use actual wake-up time for morning study slot
             const wakeTime = sleepSchedule.wakeup;
             const wakeHour = parseInt(wakeTime.split(':')[0]);
             const wakeMinutes = wakeTime.includes(':30') ? ':30' : ':00';
@@ -601,9 +582,6 @@
             
             const morningSlot = workSchedule.morningStudy ? 
                 `<div class="time-slot"><div class="time-slot-label">Morning Study</div><div class="time-slot-value">${morningStudyStart}-8:30am</div></div>` : '';
-            
-            const lunchSlot = dailyWork >= 7 ? 
-                `<div class="time-slot"><div class="time-slot-label">Lunch Break</div><div class="time-slot-value">30-45 min</div></div>` : '';
             
             let proTip = '';
             if (eveningAvailable < 0) {
@@ -625,7 +603,6 @@
                     <p style="margin-top: 12px;">${studyTimeDesc}</p>
                     <div class="time-slots">
                         ${morningSlot}
-                        ${lunchSlot}
                         ${eveningSlot}
                         <div class="time-slot"><div class="time-slot-label">Weekend Study</div><div class="time-slot-value">Flexible blocks</div></div>
                     </div>
@@ -636,10 +613,8 @@
         
         function createCharts(work, sleep, meals, family, social, other, available) {
             const pieCtx = document.getElementById('pieChart').getContext('2d');
-            const barCtx = document.getElementById('barChart').getContext('2d');
             
             if (pieChart) pieChart.destroy();
-            if (barChart) barChart.destroy();
             
             pieChart = new Chart(pieCtx, {
                 type: 'doughnut',
@@ -662,29 +637,6 @@
                     }
                 }
             });
-            
-            const totalCommitted = work + sleep + meals + family + social + other;
-            barChart = new Chart(barCtx, {
-                type: 'bar',
-                data: {
-                    labels: ['Available', 'Committed'],
-                    datasets: [{
-                        label: 'Hours/Week',
-                        data: [available, totalCommitted],
-                        backgroundColor: ['#28a745', '#dc3545'],
-                        borderRadius: 8
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        y: { beginAtZero: true, max: 168, grid: { color: '#e9ecef' } },
-                        x: { grid: { display: false } }
-                    }
-                }
-            });
         }
         
         function generateRecommendation(available, perYear, workSchedule) {
@@ -692,43 +644,28 @@
             let text = '';
             let suggestions = [];
             
-            if (available >= 20) {
-                title = 'Excellent Capacity: Multiple Options';
-                text = `<strong>Exceptional study capacity.</strong> With ${available.toFixed(0)} hours weekly (${perYear} annually), you could pursue full-time programmes or intensive part-time degrees.`;
+            if (available < 20) {
+                title = 'Almost There - Small Adjustments Needed';
+                text = `<strong>You're close to the ideal study capacity!</strong> With ${available.toFixed(0)} hours weekly (${perYear} annually), you're just a few hours short of the recommended <strong>20-25 hours per week</strong> for comfortable part-time postgraduate study. <br><br>Consider freeing up 3-5 more hours by: reducing social commitments slightly, optimizing your commute (audiobook learning, remote work days), or streamlining daily routines. These small changes could make postgraduate study very achievable for you.`;
                 suggestions = [
-                    { name: "Full-Time Master's", details: "Complete in 1 year", commitment: "20-25 hrs/week", format: "Campus or blended" },
-                    { name: "Part-Time Master's + Certificate", details: "Dual credentials over 2 years", commitment: "15-20 hrs/week", format: "Evening/weekend" },
-                    { name: "Research Programme", details: "MPhil/PhD", commitment: "20+ hrs/week", format: "Independent research" }
+                    { name: "Start with a Single Module", details: "Test the waters first", commitment: "8-10 hrs/week", format: "One module, fully online" },
+                    { name: "Postgraduate Certificate", details: "Shorter commitment in 12-15 months", commitment: "8-10 hrs/week", format: "Gateway to full programmes" }
                 ];
-            } else if (available >= 12) {
-                title = 'Strong Capacity: Part-Time Study';
-                text = `<strong>Well-suited for part-time learning.</strong> ${available.toFixed(0)} hours weekly (${perYear} annually) aligns with part-time Master's programmes. ${workSchedule.eveningStudy ? 'Evening classes work well.' : 'Weekend formats recommended.'}`;
+            } else if (available >= 25) {
+                title = 'Excellent Capacity for Part-Time Study';
+                text = `<strong>Ideal study capacity!</strong> With ${available.toFixed(0)} hours weekly (${perYear} annually), you're in the optimal range for part-time online postgraduate programmes designed for working professionals.`;
                 suggestions = [
-                    { name: "Part-Time Master's", details: "2-3 years completion", commitment: "12-15 hrs/week", format: workSchedule.eveningStudy ? "Evening & online" : "Weekend & online" },
-                    { name: "Professional Certificates", details: "Stackable credentials", commitment: "10-12 hrs/week", format: "Self-paced online" },
-                    { name: "Postgraduate Diploma", details: "Professional qualification", commitment: "12-14 hrs/week", format: "Blended learning" }
-                ];
-            } else if (available >= 7) {
-                title = 'Good Capacity: Flexible Learning';
-                text = `<strong>Supports flexible programmes.</strong> ${available.toFixed(0)} hours weekly (${perYear} annually). Executive education works well ${workSchedule.eveningStudy ? 'with evening study' : 'with weekend focus'}.`;
-                suggestions = [
-                    { name: "Executive Education", details: "For working professionals", commitment: "7-10 hrs/week", format: workSchedule.eveningStudy ? "Evening & weekend" : "Weekend intensive" },
-                    { name: "Micro-Credentials", details: "8-12 week programmes", commitment: "6-8 hrs/week", format: "Flexible online" },
-                    { name: "Professional Development", details: "Industry skills", commitment: "7-9 hrs/week", format: "Self-paced" }
-                ];
-            } else if (available >= 3) {
-                title = 'Moderate Capacity: Micro-Learning';
-                text = `<strong>Ideal for micro-learning.</strong> ${available.toFixed(0)} hours weekly (${perYear} annually). Short certificates fit your demanding schedule.`;
-                suggestions = [
-                    { name: "Short Courses", details: "4-8 week programmes", commitment: "3-5 hrs/week", format: "Fully online" },
-                    { name: "Modular Learning", details: "One module at a time", commitment: "3-6 hrs/week", format: "Self-paced" }
+                    { name: "Part-Time Online MSc", details: "Complete in 2-3 years", commitment: "12-15 hrs/week", format: "Flexible online learning" },
+                    { name: "Postgraduate Diploma", details: "Professional qualification", commitment: "10-12 hrs/week", format: "Online with optional campus days" },
+                    { name: "Postgraduate Certificate", details: "Focused credential in 9-12 months", commitment: "8-10 hrs/week", format: "Fully online" }
                 ];
             } else {
-                title = 'Limited Capacity: Consider Adjustments';
-                text = `<strong>Currently limited study time.</strong> With ${available.toFixed(0)} hours weekly, consider adjusting your schedule or ultra-flexible micro-learning.`;
+                title = 'Good Capacity for Part-Time Study';
+                text = `<strong>Solid study capacity.</strong> ${available.toFixed(0)} hours weekly (${perYear} annually) works well for part-time online postgraduate programmes. ${workSchedule.eveningStudy ? 'Evening study windows work well.' : 'Weekend-focused study recommended.'}`;
                 suggestions = [
-                    { name: "Micro-Modules", details: "2-4 week bite-sized learning", commitment: "1-2 hrs/week", format: "Mobile-friendly" },
-                    { name: "On-Demand Masterclasses", details: "Single-topic sessions", commitment: "1-3 hrs total", format: "Lifetime access" }
+                    { name: "Part-Time Online MSc", details: "2-3 years completion", commitment: "12-15 hrs/week", format: workSchedule.eveningStudy ? "Evening & weekend online" : "Weekend-intensive online" },
+                    { name: "Postgraduate Diploma", details: "Professional qualification", commitment: "10-12 hrs/week", format: "Flexible online delivery" },
+                    { name: "Postgraduate Certificate", details: "Stackable credential", commitment: "8-10 hrs/week", format: "Self-paced online" }
                 ];
             }
             
