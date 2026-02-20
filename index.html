@@ -3,37 +3,42 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Study Planner — King's College London</title>
+  <title>Study Planner — Student Time Management Tool</title>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
   <style>
     :root {
-      --crimson: #C8102E;
-      --crimson-dark: #9e0d24;
-      --crimson-light: rgba(200,16,46,0.08);
-      --gold: #d4a843;
-      --bg: #f5f0eb;
-      --surface: #fdfaf7;
-      --surface-2: #f0ebe4;
-      --border: #ddd6cc;
-      --text: #1a1410;
-      --text-2: #5a4d40;
-      --text-3: #9a8d80;
-      --shadow: 0 4px 24px rgba(26,20,16,0.08);
-      --shadow-lg: 0 12px 48px rgba(26,20,16,0.14);
+      --accent: #1e3a5f;
+      --accent-dark: #162d4a;
+      --accent-mid: #2c5282;
+      --accent-light: rgba(30,58,95,0.07);
+      --accent-glow: rgba(30,58,95,0.18);
+      --bg: #f4f5f7;
+      --surface: #ffffff;
+      --surface-2: #f0f2f5;
+      --border: #dde1e7;
+      --text: #111827;
+      --text-2: #4b5563;
+      --text-3: #9ca3af;
+      --shadow: 0 4px 24px rgba(17,24,39,0.07);
+      --shadow-lg: 0 12px 48px rgba(17,24,39,0.12);
       --r: 14px;
     }
     [data-theme="dark"] {
-      --bg: #0f0d0b;
-      --surface: #1a1714;
-      --surface-2: #231f1b;
-      --border: #2e2824;
-      --text: #f5f0eb;
-      --text-2: #d4c8bc;
-      --text-3: #a0907f;
+      --accent: #3b82f6;
+      --accent-dark: #2563eb;
+      --accent-mid: #60a5fa;
+      --accent-light: rgba(59,130,246,0.1);
+      --accent-glow: rgba(59,130,246,0.2);
+      --bg: #0d1117;
+      --surface: #161b22;
+      --surface-2: #1c2230;
+      --border: #262e3d;
+      --text: #e6edf3;
+      --text-2: #8b949e;
+      --text-3: #4d5566;
       --shadow: 0 4px 24px rgba(0,0,0,0.4);
       --shadow-lg: 0 12px 48px rgba(0,0,0,0.5);
-      --crimson-light: rgba(200,16,46,0.12);
     }
     * { margin:0; padding:0; box-sizing:border-box; }
     body {
@@ -46,7 +51,7 @@
 
     /* ─── HEADER ─── */
     .header {
-      background: var(--crimson);
+      background: var(--accent);
       position: relative;
       overflow: hidden;
       padding: 0;
@@ -55,51 +60,65 @@
       content: '';
       position: absolute;
       inset: 0;
-      background: repeating-linear-gradient(
-        -45deg,
-        transparent,
-        transparent 40px,
-        rgba(255,255,255,0.03) 40px,
-        rgba(255,255,255,0.03) 80px
-      );
+      background: linear-gradient(135deg, rgba(255,255,255,0.04) 0%, transparent 60%);
     }
     .header-inner {
       max-width: 1440px;
       margin: 0 auto;
-      padding: 32px 40px 28px;
+      padding: 28px 40px 24px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       position: relative;
     }
-    .logo-area { display: flex; align-items: center; gap: 16px; }
-    .logo-crest {
-      width: 48px; height: 48px;
-      background: rgba(255,255,255,0.15);
+    .logo-area { display: flex; align-items: center; gap: 14px; }
+    .logo-mark {
+      width: 40px; height: 40px;
+      background: rgba(255,255,255,0.12);
       border-radius: 8px;
       display: grid; place-items: center;
-      font-size: 22px;
-      backdrop-filter: blur(4px);
-      border: 1px solid rgba(255,255,255,0.2);
+      border: 1px solid rgba(255,255,255,0.18);
+      flex-shrink: 0;
     }
-    .logo-text h1 { font-family: 'Playfair Display', serif; font-size: 26px; color: #fff; line-height: 1; }
-    .logo-text span { font-size: 11px; color: rgba(255,255,255,0.7); letter-spacing: 3px; text-transform: uppercase; font-weight: 500; display: block; margin-top: 4px; }
+    .logo-mark svg { width: 20px; height: 20px; }
+    .logo-divider {
+      width: 1px; height: 32px;
+      background: rgba(255,255,255,0.2);
+      margin: 0 2px;
+    }
+    .logo-text h1 {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 18px;
+      font-weight: 600;
+      color: #fff;
+      line-height: 1;
+      letter-spacing: -0.2px;
+    }
+    .logo-text span {
+      font-size: 11px;
+      color: rgba(255,255,255,0.55);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      font-weight: 500;
+      display: block;
+      margin-top: 4px;
+    }
     .header-actions { display: flex; gap: 8px; align-items: center; }
     .hbtn {
-      background: rgba(255,255,255,0.12);
-      border: 1px solid rgba(255,255,255,0.2);
-      color: #fff;
-      padding: 9px 18px;
-      border-radius: 8px;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.18);
+      color: rgba(255,255,255,0.85);
+      padding: 8px 16px;
+      border-radius: 6px;
       font-size: 13px;
       font-weight: 500;
       cursor: pointer;
       transition: all .2s;
       font-family: 'DM Sans', sans-serif;
-      letter-spacing: 0.3px;
+      letter-spacing: 0.2px;
     }
-    .hbtn:hover { background: rgba(255,255,255,0.22); }
-    .hbtn.icon { padding: 9px 12px; }
+    .hbtn:hover { background: rgba(255,255,255,0.18); color: #fff; }
+    .hbtn.icon { padding: 8px 12px; }
 
     /* ─── LAYOUT ─── */
     .wrap {
@@ -160,8 +179,8 @@
     }
     .field select:focus, .field input:focus {
       outline: none;
-      border-color: var(--crimson);
-      box-shadow: 0 0 0 3px var(--crimson-light);
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-light);
     }
     .field-note { font-size: 11.5px; color: var(--text-3); margin-top: 5px; }
 
@@ -187,17 +206,17 @@
       margin: 0;
     }
     .day-chip input:checked + label {
-      background: var(--crimson);
-      border-color: var(--crimson);
+      background: var(--accent);
+      border-color: var(--accent);
       color: #fff;
     }
-    .day-chip label:hover { border-color: var(--crimson); }
+    .day-chip label:hover { border-color: var(--accent); }
 
     /* Submit */
     .submit-btn {
       width: 100%;
       padding: 15px;
-      background: var(--crimson);
+      background: var(--accent);
       color: #fff;
       border: none;
       border-radius: 10px;
@@ -209,7 +228,7 @@
       margin-top: 8px;
       letter-spacing: 0.3px;
     }
-    .submit-btn:hover { background: var(--crimson-dark); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(200,16,46,0.3); }
+    .submit-btn:hover { background: var(--accent-dark); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(30,58,95,0.3); }
 
     /* ─── OVERVIEW STRIP (header) ─── */
     .overview-strip {
@@ -295,7 +314,7 @@
       cursor: pointer;
       font-weight: 500;
     }
-    #activitySelect:focus { outline: none; border-color: var(--crimson); box-shadow: 0 0 0 3px var(--crimson-light); }
+    #activitySelect:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-light); }
     .tbtn {
       padding: 9px 16px;
       border-radius: 8px;
@@ -309,8 +328,8 @@
       transition: all .2s;
     }
     .tbtn:hover { border-color: var(--text-3); background: var(--surface-2); }
-    .tbtn.primary { background: var(--crimson); color: #fff; border-color: var(--crimson); }
-    .tbtn.primary:hover { background: var(--crimson-dark); }
+    .tbtn.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+    .tbtn.primary:hover { background: var(--accent-dark); }
 
     /* Legend */
     .legend {
@@ -370,9 +389,9 @@
       color: transparent;
     }
     [data-theme="dark"] .g-cell { border-bottom: 1px solid rgba(255,255,255,0.03); }
-    .g-cell:hover:not(.is-work):not(.is-sleep):not(.is-commute) { background: var(--crimson-light) !important; }
+    .g-cell:hover:not(.is-work):not(.is-sleep):not(.is-commute) { background: var(--accent-light) !important; }
     .g-cell.is-study  { background: #2d9a57; color: rgba(255,255,255,0.6); }
-    .g-cell.is-work   { background: #C8102E; cursor: not-allowed; }
+    .g-cell.is-work   { background: #1e3a5f; cursor: not-allowed; }
     .g-cell.is-commute{ background: #e07b1a; cursor: not-allowed; }
     .g-cell.is-sleep  { background: #6b7280; cursor: not-allowed; }
     .g-cell.is-family { background: #e05a7a; color: rgba(255,255,255,0.6); }
@@ -406,7 +425,7 @@
     /* Schedule info callout */
     .callout {
       background: var(--surface-2);
-      border-left: 3px solid var(--crimson);
+      border-left: 3px solid var(--accent);
       border-radius: 0 8px 8px 0;
       padding: 14px 16px;
       margin-top: 20px;
@@ -447,10 +466,20 @@
 <header class="header">
   <div class="header-inner">
     <div class="logo-area">
-      <div class="logo-crest">🦁</div>
+      <div class="logo-mark">
+        <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="2" y="3" width="16" height="15" rx="2" stroke="white" stroke-width="1.5"/>
+          <path d="M2 7h16" stroke="white" stroke-width="1.5"/>
+          <path d="M6 1v4M14 1v4" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+          <rect x="5" y="10" width="3" height="3" rx="0.5" fill="white" opacity="0.7"/>
+          <rect x="9" y="10" width="3" height="3" rx="0.5" fill="white" opacity="0.7"/>
+          <rect x="5" y="14" width="3" height="2" rx="0.5" fill="white" opacity="0.5"/>
+        </svg>
+      </div>
+      <div class="logo-divider"></div>
       <div class="logo-text">
         <h1>Study Planner</h1>
-        <span>King's College London</span>
+        <span>Student Time Management Tool</span>
       </div>
     </div>
     <div class="header-actions">
@@ -462,9 +491,9 @@
   <!-- Overview strip — shown after generating -->
   <div style="max-width:1440px;margin:0 auto;padding:0 40px 20px;">
     <div class="overview-strip" id="overviewStrip">
-      <div class="ov-item"><div class="ov-dot" style="background:#C8102E"></div><div><div class="ov-val" id="ov-work">—</div><div class="ov-lbl">Work</div></div></div>
+      <div class="ov-item"><div class="ov-dot" style="background:rgba(255,255,255,0.5)"></div><div><div class="ov-val" id="ov-work">—</div><div class="ov-lbl">Work</div></div></div>
       <div class="ov-item"><div class="ov-dot" style="background:#e07b1a"></div><div><div class="ov-val" id="ov-commute">—</div><div class="ov-lbl">Commute</div></div></div>
-      <div class="ov-item"><div class="ov-dot" style="background:#6b7280"></div><div><div class="ov-val" id="ov-sleep">—</div><div class="ov-lbl">Sleep</div></div></div>
+      <div class="ov-item"><div class="ov-dot" style="background:#9ca3af"></div><div><div class="ov-val" id="ov-sleep">—</div><div class="ov-lbl">Sleep</div></div></div>
       <div class="ov-item ov-free"><div class="ov-dot" style="background:#7dffb3"></div><div><div class="ov-val" id="ov-free">—</div><div class="ov-lbl">Available / week</div></div></div>
     </div>
   </div>
@@ -566,7 +595,7 @@
 
       <!-- Legend -->
       <div class="legend">
-        <div class="legend-item"><div class="leg-dot" style="background:#C8102E"></div>Work</div>
+        <div class="legend-item"><div class="leg-dot" style="background:#1e3a5f"></div>Work</div>
         <div class="legend-item"><div class="leg-dot" style="background:#e07b1a"></div>Commute</div>
         <div class="legend-item"><div class="leg-dot" style="background:#6b7280"></div>Sleep</div>
         <div class="legend-item"><div class="leg-dot" style="background:#2d9a57"></div>Study</div>
@@ -737,12 +766,21 @@
     'extended': {s:21, e:6},
   };
 
-  function getOfficeDays(arr) {
+  function getWorkDays(arr) {
+    // ALL days where work happens (Mon–Fri for everyone except fully remote, who still work Mon–Fri)
+    // Remote workers just have no commute — they still work 5 days
+    return [0, 1, 2, 3, 4];
+  }
+
+  function getCommuteDays(arr) {
+    // Only the days where the person physically travels in
     if (arr === 'remote') return [];
     if (arr.startsWith('hybrid')) {
-      return Array.from(document.querySelectorAll('#hybridField input:checked')).map(cb => parseInt(cb.value));
+      return Array.from(document.querySelectorAll('#hybridField input:checked'))
+        .map(cb => parseInt(cb.value));
     }
-    return [0,1,2,3,4];
+    // Full-time office: all 5 days
+    return [0, 1, 2, 3, 4];
   }
 
   // ─────────────────────────────────────────────
@@ -751,23 +789,24 @@
   function populateSchedule(workType, commuteType, sleepType, arr) {
     document.querySelectorAll('.g-cell').forEach(c => c.className = 'g-cell');
 
-    const officeDays = getOfficeDays(arr);
+    const allWorkDays  = getWorkDays(arr);      // Mon–Fri always (work happens every day)
+    const commuteDays  = getCommuteDays(arr);   // Only days physically in office
     const wh = workMap[workType] || workMap['standard'];
     const sh = sleepMap[sleepType] || sleepMap['average'];
 
-    // Work
-    officeDays.forEach(day => {
+    // Work — every weekday regardless of arrangement
+    allWorkDays.forEach(day => {
       for (let h = wh.s; h < wh.e; h++) {
         const c = document.querySelector(`[data-day="${day}"][data-hour="${h}"]`);
         if (c) c.classList.add('is-work');
       }
     });
 
-    // Commute (only if not 'none')
-    if (commuteType !== 'none') {
+    // Commute — only on office/commute days, and only if commute isn't 'none'
+    if (commuteType !== 'none' && commuteDays.length > 0) {
       const morningHour = Math.max(0, wh.s - 1);
       const eveningHour = Math.min(23, wh.e);
-      officeDays.forEach(day => {
+      commuteDays.forEach(day => {
         const cm = document.querySelector(`[data-day="${day}"][data-hour="${morningHour}"]`);
         const ce = document.querySelector(`[data-day="${day}"][data-hour="${eveningHour}"]`);
         if (cm && !cm.classList.contains('is-work')) cm.classList.add('is-commute');
@@ -775,7 +814,7 @@
       });
     }
 
-    // Sleep — every day
+    // Sleep — every night
     for (let day = 0; day < 7; day++) {
       for (let h = sh.s; h < 24; h++) {
         const c = document.querySelector(`[data-day="${day}"][data-hour="${h}"]`);
@@ -794,7 +833,7 @@
   //  STATS
   // ─────────────────────────────────────────────
   const COLORS = {
-    work:'#C8102E', commute:'#e07b1a', sleep:'#6b7280',
+    work:'#1e3a5f', commute:'#e07b1a', sleep:'#6b7280',
     study:'#2d9a57', family:'#e05a7a', social:'#c9981a', other:'#5a9e82'
   };
 
@@ -833,8 +872,8 @@
           <div class="lbl">${i.label}</div>
         </div>
       `).join('') + `
-        <div class="sbar-chip" style="border-color:var(--crimson)">
-          <div class="val" style="color:var(--crimson)">${free}h</div>
+        <div class="sbar-chip" style="border-color:var(--accent)">
+          <div class="val" style="color:var(--accent)">${free}h</div>
           <div class="lbl">Free</div>
         </div>
       `;
