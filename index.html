@@ -8,11 +8,11 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
   <style>
     :root {
-      --accent: #1e3a5f;
-      --accent-dark: #162d4a;
-      --accent-mid: #2c5282;
-      --accent-light: rgba(30,58,95,0.07);
-      --accent-glow: rgba(30,58,95,0.18);
+      --accent: #9b1c1c;
+      --accent-dark: #7f1d1d;
+      --accent-mid: #b91c1c;
+      --accent-light: rgba(155,28,28,0.07);
+      --accent-glow: rgba(155,28,28,0.18);
       --bg: #f4f5f7;
       --surface: #ffffff;
       --surface-2: #f0f2f5;
@@ -25,11 +25,11 @@
       --r: 14px;
     }
     [data-theme="dark"] {
-      --accent: #3b82f6;
-      --accent-dark: #2563eb;
-      --accent-mid: #60a5fa;
-      --accent-light: rgba(59,130,246,0.1);
-      --accent-glow: rgba(59,130,246,0.2);
+      --accent: #ef4444;
+      --accent-dark: #dc2626;
+      --accent-mid: #f87171;
+      --accent-light: rgba(239,68,68,0.1);
+      --accent-glow: rgba(239,68,68,0.2);
       --bg: #0d1117;
       --surface: #161b22;
       --surface-2: #1c2230;
@@ -391,7 +391,7 @@
     [data-theme="dark"] .g-cell { border-bottom: 1px solid rgba(255,255,255,0.03); }
     .g-cell:hover:not(.is-work):not(.is-sleep):not(.is-commute) { background: var(--accent-light) !important; }
     .g-cell.is-study  { background: #2d9a57; color: rgba(255,255,255,0.6); }
-    .g-cell.is-work   { background: #1e3a5f; cursor: not-allowed; }
+    .g-cell.is-work   { background: #9b1c1c; cursor: not-allowed; }
     .g-cell.is-commute{ background: #e07b1a; cursor: not-allowed; }
     .g-cell.is-sleep  { background: #6b7280; cursor: not-allowed; }
     .g-cell.is-family { background: #e05a7a; color: rgba(255,255,255,0.6); }
@@ -491,7 +491,7 @@
   <!-- Overview strip — shown after generating -->
   <div style="max-width:1440px;margin:0 auto;padding:0 40px 20px;">
     <div class="overview-strip" id="overviewStrip">
-      <div class="ov-item"><div class="ov-dot" style="background:rgba(255,255,255,0.5)"></div><div><div class="ov-val" id="ov-work">—</div><div class="ov-lbl">Work</div></div></div>
+      <div class="ov-item"><div class="ov-dot" style="background:rgba(255,255,255,0.6)"></div><div><div class="ov-val" id="ov-work">—</div><div class="ov-lbl">Work</div></div></div>
       <div class="ov-item"><div class="ov-dot" style="background:#e07b1a"></div><div><div class="ov-val" id="ov-commute">—</div><div class="ov-lbl">Commute</div></div></div>
       <div class="ov-item"><div class="ov-dot" style="background:#9ca3af"></div><div><div class="ov-val" id="ov-sleep">—</div><div class="ov-lbl">Sleep</div></div></div>
       <div class="ov-item ov-free"><div class="ov-dot" style="background:#7dffb3"></div><div><div class="ov-val" id="ov-free">—</div><div class="ov-lbl">Available / week</div></div></div>
@@ -595,7 +595,7 @@
 
       <!-- Legend -->
       <div class="legend">
-        <div class="legend-item"><div class="leg-dot" style="background:#1e3a5f"></div>Work</div>
+        <div class="legend-item"><div class="leg-dot" style="background:#9b1c1c"></div>Work</div>
         <div class="legend-item"><div class="leg-dot" style="background:#e07b1a"></div>Commute</div>
         <div class="legend-item"><div class="leg-dot" style="background:#6b7280"></div>Sleep</div>
         <div class="legend-item"><div class="leg-dot" style="background:#2d9a57"></div>Study</div>
@@ -833,7 +833,7 @@
   //  STATS
   // ─────────────────────────────────────────────
   const COLORS = {
-    work:'#1e3a5f', commute:'#e07b1a', sleep:'#6b7280',
+    work:'#9b1c1c', commute:'#e07b1a', sleep:'#6b7280',
     study:'#2d9a57', family:'#e05a7a', social:'#c9981a', other:'#5a9e82'
   };
 
